@@ -1,0 +1,16 @@
+title new_note (SPA)
+actor person
+
+# Click on post button
+person->browser: Executes submit button
+
+note over browser:
+The browser executes the submit event handler
+of the form that was registered when the
+application was first loaded.
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa (JSON)
+server-->browser: Status 201: message - note created
+
+browser-->person: Displays updated notes

@@ -1,0 +1,28 @@
+title notes (SPA)
+actor person
+
+person->browser: Executes URL request
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: Status 200: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: Status 200: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+server-->browser: Status 200: spa.js
+
+note over browser:
+browser executes js-code
+that requests JSON data
+from server
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: Status 200: data.json
+
+note over browser:
+browser execute window loading event
+that register a submit handler function
+to the form.
+end note
+
+browser-->person: Displays notes
