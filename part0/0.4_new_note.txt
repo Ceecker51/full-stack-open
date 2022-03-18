@@ -40,7 +40,7 @@ server-->browser: Status 200: data.json
 
 note over browser:
 browser executes the event handler
-that renders notes to display
+and renders notes to display
 end note
 
 browser-->person: displays notes

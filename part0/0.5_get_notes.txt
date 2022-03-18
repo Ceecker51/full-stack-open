@@ -12,7 +12,7 @@ server-->browser: Status 200: spa.js
 
 note over browser:
 browser executes js-code
-that requests JSON data
+and requests JSON data
 from server
 end note
 
