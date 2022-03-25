@@ -11,12 +11,12 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
   ];
 
-  const [selected, setSelected] = useState(0);
-  const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
-
   const getRandomInt = (max) => {
     return Math.floor(Math.random() * max);
   }
+
+  const [selected, setSelected] = useState(getRandomInt(anecdotes.length));
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
 
   const handleVote = () => {
     const copyPoints = [...points];
