@@ -18,15 +18,24 @@ const CountryDetails = ({ country }) => {
   )
 }
 
-const CountryList = ({ countries }) => {
+const Country = ({ country, onClick }) => {
   return (
     <div>
-      {countries.map(country => <div key={country.name.common}>{country.name.common}</div>)}
+      {country.name.common}
+      <button onClick={(event) => onClick(event, country)}>show</button>
     </div>
   )
 }
 
-const Countries = ({ countries }) => {
+const CountryList = ({ countries, onClick }) => {
+  return (
+    <div>
+      {countries.map(country => <Country key={country.name.common} country={country} onClick={onClick} />)}
+    </div>
+  )
+}
+
+const Countries = ({ countries, onClick }) => {
   if (countries.length > 10) {
     return <div>Too many matches, specify another filter</div>
   }
@@ -35,7 +44,7 @@ const Countries = ({ countries }) => {
     return <CountryDetails country={countries[0]} />
   }
 
-  return <CountryList countries={countries} />
+  return <CountryList countries={countries} onClick={onClick} />
 }
 
 const App = () => {
@@ -54,6 +63,10 @@ const App = () => {
     setSearchText(event.target.value)
   }
 
+  const handleShowDetails = (event, element) => {
+    setSearchText(element.name.common);
+  }
+
   const filterCountries = searchText.length > 0
     ? countries.filter(country => country.name.common.toLowerCase().includes(searchText.toLowerCase()))
     : countries;
@@ -61,7 +74,7 @@ const App = () => {
   return (
     <div>
       <div>find countries <input value={searchText} onChange={handleSearchTextChanged} /></div>
-      <Countries countries={filterCountries} />
+      <Countries countries={filterCountries} onClick={handleShowDetails} />
     </div>
   );
 }
