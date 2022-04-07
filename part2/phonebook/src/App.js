@@ -7,6 +7,11 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
 
+    if (persons.find(person => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`);
+      return;
+    }
+
     const personObj = {
       name: newName
     };
@@ -21,7 +26,6 @@ const App = () => {
 
   return (
     <div>
-      <div>debug: {newName}</div>
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
         <div>
