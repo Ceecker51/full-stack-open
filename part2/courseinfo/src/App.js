@@ -28,10 +28,10 @@ const Content = ({ parts }) => {
 
 // Renders the total number of exercises
 const Total = ({ parts }) => {
-  const [part1, part2, part3, part4, ...rest] = parts;
+  const total = parts.reduce((sum, part) => sum + part.exercises, 0);
 
   return (
-    <p><b>total of {part1.exercises + part2.exercises + part3.exercises + part4.exercises} exercises</b></p>
+    <p><b>total of {total} exercises</b></p>
   );
 };
 
