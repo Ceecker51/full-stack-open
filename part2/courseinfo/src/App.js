@@ -14,23 +14,24 @@ const Part = ({ part }) => {
 
 // Renders the parts and their number of exercises
 const Content = ({ parts }) => {
-  const [part1, part2, part3, ...rest] = parts;
+  const [part1, part2, part3, part4, ...rest] = parts;
 
   return (
     <div>
       <Part part={part1} />
       <Part part={part2} />
       <Part part={part3} />
+      <Part part={part4} />
     </div>
   );
 };
 
 // Renders the total number of exercises
 const Total = ({ parts }) => {
-  const [part1, part2, part3, ...rest] = parts;
+  const [part1, part2, part3, part4, ...rest] = parts;
 
   return (
-    <p>Number of exercises {part1.exercises + part2.exercises + part3.exercises}</p>
+    <p><b>total of {part1.exercises + part2.exercises + part3.exercises + part4.exercises} exercises</b></p>
   );
 };
 
@@ -64,6 +65,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
