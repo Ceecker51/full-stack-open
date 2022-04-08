@@ -10,7 +10,7 @@ const Weather = ({ capital }) => {
       .then(response => {
         setWeather(response.data);
       })
-  }, []);
+  }, [capital]);
 
   if (!weather) {
     return <p>Loading ...</p>
