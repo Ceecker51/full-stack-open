@@ -33,8 +33,21 @@ const Persons = ({ persons, onClick }) => {
 }
 
 const Notification = ({ message }) => {
-const successStyle = {
-    color: 'green',
+  if (!message) {
+    return null;
+  }
+
+  const getColor = (type) => {
+    if (type === 'success')
+      return 'green';
+    else if (type === 'error')
+      return 'red';
+
+    return 'black';
+  }
+
+  const messageStyle = {
+    color: getColor(message.type),
     background: 'lightgrey',
     fontSize: 20,
     borderStyle: 'solid',
@@ -43,13 +56,9 @@ const successStyle = {
     marginBottom: 10
   }
 
-  if (!message) {
-    return null;
-  }
-
   return (
-    <div style={successStyle}>
-      {message}
+    <div style={messageStyle}>
+      {message.text}
     </div>
   )
 }
@@ -70,6 +79,11 @@ const App = () => {
       });
   }, []);
 
+  const showMessage = (type, text) => {
+    setNotifyMessage({ type, text });
+    setTimeout(() => setNotifyMessage(null), 5000);
+  }
+
   const addPerson = (event) => {
     event.preventDefault();
     const person = persons.find(person => person.name === newName);
@@ -88,11 +102,10 @@ const App = () => {
             setNewName('');
             setNewNumber('');
 
-            setNotifyMessage(`Changed number of ${person.name}`);
-            setTimeout(() => setNotifyMessage(null), 5000);
+            showMessage('success', `Changed number of ${person.name}`);
           })
           .catch(error => {
-            alert(`the person '${person.name}' was already deleted from server`);
+            showMessage('error', `Information of '${person.name}' has already been removed from server`);
             setPersons(persons.filter(p => p.id !== person.id))
           })
       }
@@ -110,11 +123,10 @@ const App = () => {
           setNewName('');
           setNewNumber('');
 
-          setNotifyMessage(`Added ${personObj.name}`);
-          setTimeout(() => setNotifyMessage(null), 5000);
+          showMessage('success', `Added ${personObj.name}`)
         })
         .catch(error => {
-          alert(`the person '${personObj.name}' can not be created on the server.`)
+          showMessage('error', `the person '${personObj.name}' can not be created on the server.`)
         });
     }
   }
@@ -139,9 +151,10 @@ const App = () => {
         .remove(person.id)
         .then(returnedPerson => {
           setPersons(persons.filter(p => p.id !== person.id))
+          showMessage('success', `Deleted ${person.name}`)
         })
         .catch(error => {
-          alert(`the person '${person.name}' was already deleted from server`);
+          showMessage('error', `Information of '${person.name}' has already been removed from server`);
           setPersons(persons.filter(p => p.id !== person.id))
         })
     }
