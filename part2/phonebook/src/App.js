@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios"
+import personService from './services/persons'
 
 const Filter = ({ searchField, changeSearchField }) => {
   return (
@@ -36,10 +36,12 @@ const App = () => {
   const [searchField, setSearchField] = useState('');
 
   useEffect(() => {
-    const url = 'http://localhost:3001/persons';
-    axios
-      .get(url)
-      .then((response) => setPersons(response.data))
+    personService
+      .getAll()
+      .then(initPersons => setPersons(initPersons))
+      .catch(error => {
+        alert(`Can not request persons from server.`)
+      });
   }, []);
 
   const addPerson = (event) => {
@@ -55,13 +57,16 @@ const App = () => {
       number: newNumber
     };
 
-    axios
-      .post('http://localhost:3001/persons', personObj)
-      .then(response => {
-        setPersons(persons.concat(response.data));
+    personService
+      .create(personObj)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson));
 
         setNewName('');
         setNewNumber('');
+      })
+      .catch(error => {
+        alert(`the person '${personObj.name}' can not be created on the server.`)
       });
   }
 
