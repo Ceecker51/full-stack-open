@@ -23,9 +23,12 @@ const PersonForm = ({ onSubmit, newName, changeName, newNumber, changeNumber }) 
   )
 }
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, onClick }) => {
   return persons.map(person =>
-    <div key={person.name}>{person.name} {person.number}</div>
+    <div key={person.name}>
+      {person.name} {person.number}
+      <button onClick={(event) => onClick(event, person)}>delete</button>
+    </div>
   )
 }
 
@@ -82,6 +85,22 @@ const App = () => {
     setSearchField(event.target.value);
   }
 
+  const handleDeletePerson = (event, person) => {
+    const message = `Delete ${person.name} ?`;
+
+    if (window.confirm(message)) {
+      personService
+        .remove(person.id)
+        .then(returnedPerson => {
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+        .catch(error => {
+          alert(`the person '${person.name}' was already deleted from server`);
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+    }
+  }
+
   const filteredPersons = searchField.length > 0
     ? persons.filter(person => person.name.toLowerCase().includes(searchField.toLowerCase()))
     : persons
@@ -95,7 +114,7 @@ const App = () => {
         newName={newName} changeName={handleNewName}
         newNumber={newNumber} changeNumber={handleNewNumber} />
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} onClick={handleDeletePerson} />
     </div>
   )
 }
