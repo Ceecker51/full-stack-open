@@ -25,7 +25,7 @@ const PersonForm = ({ onSubmit, newName, changeName, newNumber, changeNumber }) 
 
 const Persons = ({ persons, onClick }) => {
   return persons.map(person =>
-    <div key={person.name}>
+    <div key={person.id}>
       {person.name} {person.number}
       <button onClick={(event) => onClick(event, person)}>delete</button>
     </div>
@@ -49,28 +49,45 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
+    const person = persons.find(person => person.name === newName);
 
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-      return;
+    if (person) {
+      const message = `${newName} is already added to phonebook, replace the old number with a new one?`
+
+      if (window.confirm(message)) {
+        const changedPerson = { ...person, number: newNumber }
+
+        personService
+          .update(person.id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
+
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch(error => {
+            alert(`the person '${person.name}' was already deleted from server`);
+            setPersons(persons.filter(p => p.id !== person.id))
+          })
+      }
+    } else {
+      const personObj = {
+        name: newName,
+        number: newNumber
+      };
+
+      personService
+        .create(personObj)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson));
+
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(error => {
+          alert(`the person '${personObj.name}' can not be created on the server.`)
+        });
     }
-
-    const personObj = {
-      name: newName,
-      number: newNumber
-    };
-
-    personService
-      .create(personObj)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson));
-
-        setNewName('');
-        setNewNumber('');
-      })
-      .catch(error => {
-        alert(`the person '${personObj.name}' can not be created on the server.`)
-      });
   }
 
   const handleNewName = (event) => {
