@@ -32,11 +32,34 @@ const Persons = ({ persons, onClick }) => {
   )
 }
 
+const Notification = ({ message }) => {
+const successStyle = {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  if (!message) {
+    return null;
+  }
+
+  return (
+    <div style={successStyle}>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchField, setSearchField] = useState('');
+  const [notifyMessage, setNotifyMessage] = useState(null);
 
   useEffect(() => {
     personService
@@ -64,6 +87,9 @@ const App = () => {
 
             setNewName('');
             setNewNumber('');
+
+            setNotifyMessage(`Changed number of ${person.name}`);
+            setTimeout(() => setNotifyMessage(null), 5000);
           })
           .catch(error => {
             alert(`the person '${person.name}' was already deleted from server`);
@@ -83,6 +109,9 @@ const App = () => {
 
           setNewName('');
           setNewNumber('');
+
+          setNotifyMessage(`Added ${personObj.name}`);
+          setTimeout(() => setNotifyMessage(null), 5000);
         })
         .catch(error => {
           alert(`the person '${personObj.name}' can not be created on the server.`)
@@ -125,6 +154,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notifyMessage} />
       <Filter searchField={searchField} changeSearchField={handleSearchField} />
       <h3>Add a new</h3>
       <PersonForm onSubmit={addPerson}
