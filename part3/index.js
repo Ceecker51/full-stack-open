@@ -26,6 +26,7 @@ let persons = [
 ];
 
 const app = express();
+app.use(express.json());
 
 app.get("/info", (_, response) => {
   const content =
@@ -37,6 +38,20 @@ app.get("/info", (_, response) => {
 
 app.get("/api/persons", (_, response) => {
   response.json(persons);
+});
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  };
+
+  persons = persons.concat(person);
+
+  response.json(person);
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -61,3 +76,7 @@ app.delete("/api/persons/:id", (request, response) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+const generateId = () => {
+  return Math.round(Math.random() * 10000);
+};
