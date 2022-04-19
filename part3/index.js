@@ -1,5 +1,10 @@
+const { json } = require("express");
 const express = require("express");
 const morgan = require("morgan");
+
+// ######################
+// data
+// ######################
 
 let persons = [
   {
@@ -25,17 +30,28 @@ let persons = [
 ];
 
 // ######################
+// middleware
+// ######################
+
+/* prettier-ignore */ {
+morgan.token("body", (req, _) => JSON.stringify(req.body));
+morgan.format("detail", ":method :url :status :req[content-length] - :response-time ms :body"); 
+}
+
+// ######################
 // application
 // ######################
 
-// configurations
+// configuration
 const PORT = 3001;
 
 const app = express();
 
+// setup middleware
 app.use(express.json()); // body-parser
-app.use(morgan("tiny")); // logger
+app.use(morgan("detail")); // logger
 
+// setup routes
 app.get("/info", (_, response) => {
   const content =
     `<p>Phonebook has info for ${persons.length} people</p>` +
@@ -98,9 +114,14 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+// setup server
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
+
+// ##########################
+// custom methods
+// ##########################
 
 const generateId = () => {
   return Math.round(Math.random() * 10000);
