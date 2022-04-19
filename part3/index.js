@@ -1,6 +1,5 @@
 const express = require("express");
-
-const PORT = 3001;
+const morgan = require("morgan");
 
 let persons = [
   {
@@ -25,8 +24,17 @@ let persons = [
   },
 ];
 
+// ######################
+// application
+// ######################
+
+// configurations
+const PORT = 3001;
+
 const app = express();
-app.use(express.json());
+
+app.use(express.json()); // body-parser
+app.use(morgan("tiny")); // logger
 
 app.get("/info", (_, response) => {
   const content =
