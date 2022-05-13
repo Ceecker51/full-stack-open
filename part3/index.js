@@ -47,9 +47,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 /* setup middleware */
-app.use(cors()); // cors-handling (cross-origin resource sharing)
-app.use(express.json()); // body-parser
-app.use(morgan("detail")); // logger
+app.use(cors());                  // cors-handling (cross-origin resource sharing)
+app.use(express.json());          // body-parser
+app.use(morgan("detail"));        // logger
+app.use(express.static('build')); // frontend folder
 
 /* setup routes */
 app.get("/info", (_, response) => {
