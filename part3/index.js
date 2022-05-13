@@ -1,6 +1,7 @@
 const { json } = require("express");
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 // ######################
 // data
@@ -43,13 +44,14 @@ morgan.format("detail", ":method :url :status :req[content-length] - :response-t
 // ######################
 
 // configuration
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
 // setup middleware
-app.use(express.json()); // body-parser
-app.use(morgan("detail")); // logger
+app.use(cors());            // cors-handling
+app.use(express.json());    // body-parser
+app.use(morgan("detail"));  // logger
 
 // setup routes
 app.get("/info", (_, response) => {
