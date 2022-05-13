@@ -1,0 +1,1 @@
+web: sh -c 'cd ./part3/ && npm start'

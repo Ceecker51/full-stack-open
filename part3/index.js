@@ -1,4 +1,3 @@
-const { json } = require("express");
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -42,18 +41,17 @@ morgan.format("detail", ":method :url :status :req[content-length] - :response-t
 // ######################
 // application
 // ######################
-
-// configuration
-const PORT = process.env.PORT || 3001;
-
 const app = express();
 
-// setup middleware
-app.use(cors());            // cors-handling
-app.use(express.json());    // body-parser
-app.use(morgan("detail"));  // logger
+/* configuration */
+const PORT = process.env.PORT || 3001;
 
-// setup routes
+/* setup middleware */
+app.use(cors()); // cors-handling (cross-origin resource sharing)
+app.use(express.json()); // body-parser
+app.use(morgan("detail")); // logger
+
+/* setup routes */
 app.get("/info", (_, response) => {
   const content =
     `<p>Phonebook has info for ${persons.length} people</p>` +
@@ -116,7 +114,7 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
-// setup server
+/* setup server */
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
