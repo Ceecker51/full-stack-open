@@ -37,6 +37,10 @@ let persons = [
 // middleware
 // ######################
 
+const unknownEndpoint = (_, response) => {
+  response.status(404).send({ error: "unkown endpoint" });
+};
+
 /* prettier-ignore */ {
 morgan.token("body", (req, _) => JSON.stringify(req.body));
 morgan.format("detail", ":method :url :status :req[content-length] - :response-time ms :body"); 
@@ -48,10 +52,10 @@ morgan.format("detail", ":method :url :status :req[content-length] - :response-t
 const app = express();
 
 /* setup middleware */
+app.use(express.static("build")); // frontend folder
 app.use(cors()); // cors-handling (cross-origin resource sharing)
 app.use(express.json()); // body-parser
 app.use(morgan("detail")); // logger
-app.use(express.static("build")); // frontend folder
 
 /* setup routes */
 app.get("/info", (_, response) => {
@@ -94,9 +98,9 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then(savedPerson => {
+  person.save().then((savedPerson) => {
     response.json(savedPerson);
-  }); 
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -116,6 +120,12 @@ app.delete("/api/persons/:id", (request, response) => {
 
   response.status(204).end();
 });
+
+app.use(unknownEndpoint);
+
+// ######################
+// server
+// ######################
 
 /* configuration */
 const PORT = process.env.PORT;
