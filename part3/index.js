@@ -1,6 +1,10 @@
+require("dotenv").config();
+
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+
+const Person = require("./models/person");
 
 // ######################
 // data
@@ -43,14 +47,11 @@ morgan.format("detail", ":method :url :status :req[content-length] - :response-t
 // ######################
 const app = express();
 
-/* configuration */
-const PORT = process.env.PORT || 3001;
-
 /* setup middleware */
-app.use(cors());                  // cors-handling (cross-origin resource sharing)
-app.use(express.json());          // body-parser
-app.use(morgan("detail"));        // logger
-app.use(express.static('build')); // frontend folder
+app.use(cors()); // cors-handling (cross-origin resource sharing)
+app.use(express.json()); // body-parser
+app.use(morgan("detail")); // logger
+app.use(express.static("build")); // frontend folder
 
 /* setup routes */
 app.get("/info", (_, response) => {
@@ -62,7 +63,9 @@ app.get("/info", (_, response) => {
 });
 
 app.get("/api/persons", (_, response) => {
-  response.json(persons);
+  Person.find({}).then(persons => {
+    response.json(persons);
+  });
 });
 
 app.post("/api/persons", (request, response) => {
@@ -114,6 +117,9 @@ app.delete("/api/persons/:id", (request, response) => {
 
   response.status(204).end();
 });
+
+/* configuration */
+const PORT = process.env.PORT;
 
 /* setup server */
 app.listen(PORT, () => {
