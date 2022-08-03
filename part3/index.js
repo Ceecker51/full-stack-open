@@ -67,11 +67,13 @@ app.use(morgan("detail")); // logger
 
 /* setup routes */
 app.get("/info", (_, response) => {
-  const content =
-    `<p>Phonebook has info for ${persons.length} people</p>` +
-    `<p>${new Date()}</p>`;
+  Person.find({}).then((persons) => {
+    const content =
+      `<p>Phonebook has info for ${persons.length} people</p>` +
+      `<p>${new Date()}</p>`;
 
-  response.send(content);
+    response.send(content);
+  });
 });
 
 app.get("/api/persons", (_, response, next) => {
