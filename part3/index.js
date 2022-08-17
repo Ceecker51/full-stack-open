@@ -42,7 +42,11 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
+
+  next(error);
 };
 
 const unknownEndpoint = (_, response) => {
@@ -67,13 +71,15 @@ app.use(morgan("detail")); // logger
 
 /* setup routes */
 app.get("/info", (_, response) => {
-  Person.find({}).then((persons) => {
-    const content =
-      `<p>Phonebook has info for ${persons.length} people</p>` +
-      `<p>${new Date()}</p>`;
+  Person.find({})
+    .then((persons) => {
+      const content =
+        `<p>Phonebook has info for ${persons.length} people</p>` +
+        `<p>${new Date()}</p>`;
 
-    response.send(content);
-  });
+      response.send(content);
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons", (_, response, next) => {

@@ -3,19 +3,19 @@ const mongoose = require("mongoose");
 const url = process.env.MONGODB_URI;
 
 // connect to database
-console.log("Connecting to ", url);
+console.log("Connecting to", url);
 mongoose
   .connect(url)
   .then((result) => {
     console.log("connected to MongoDB");
   })
   .catch((error) => {
-    console.log("error connecting to MongoDB: ", error.message);
+    console.log("error connecting to MongoDB:", error.message);
   });
 
 // define db schema
 const personSchema = new mongoose.Schema({
-  name: String,
+  name: {type: String, minlength: 3},
   number: String,
 });
 

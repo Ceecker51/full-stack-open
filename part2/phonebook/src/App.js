@@ -126,7 +126,7 @@ const App = () => {
           showMessage('success', `Added ${personObj.name}`)
         })
         .catch(error => {
-          showMessage('error', `the person '${personObj.name}' can not be created on the server.`)
+          showMessage('error', error.response.data.error)
         });
     }
   }
