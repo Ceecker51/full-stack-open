@@ -15,7 +15,7 @@ mongoose
 
 // define db schema
 const personSchema = new mongoose.Schema({
-  name: {type: String, minlength: 3},
+  name: {type: String, minlength: 3, required: true},
   number: String,
 });
 
