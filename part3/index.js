@@ -44,13 +44,15 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: "malformatted id" });
   } else if (error.name === "ValidationError") {
     return response.status(400).json({ error: error.message });
+  } else if (error.message.indexOf("duplicate key error") !== -1) {
+    return response.status(409).json({ error: "duplicate key" });
   }
 
   next(error);
 };
 
 const unknownEndpoint = (_, response) => {
-  response.status(404).send({ error: "unkown endpoint" });
+  response.status(404).send({ error: "unknown endpoint" });
 };
 
 /* prettier-ignore */ {
@@ -92,18 +94,6 @@ app.get("/api/persons", (_, response, next) => {
 
 app.post("/api/persons", (request, response, next) => {
   const body = request.body;
-  
-  if (!body.number) {
-    return response.status(400).json({
-      error: "number is missing",
-    });
-  }
-
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(409).json({
-      error: "name must be unique",
-    });
-  }
 
   const person = new Person({
     name: body.name,
@@ -131,20 +121,17 @@ app.get("/api/persons/:id", (request, response, next) => {
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
-  const body = request.body;
+  const { name, number } = request.body;
 
-  if (!body.number) {
-    return response.status(400).json({
-      error: "number is missing",
-    });
-  }
-
-  const person = {
-    name: body.name,
-    number: body.number,
-  };
-
-  Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    {
+      new: true,
+      runValidators: true,
+      context: "query",
+    }
+  )
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })
