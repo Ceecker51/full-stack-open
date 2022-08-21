@@ -15,18 +15,13 @@ const favoriteBlog = (blogs) => {
 };
 
 const mostBlogs = (blogs) => {
-  const authorBlogs = {};
+  const groupByBlogs = blogs.reduce((acc, it) => {
+    acc[it.author] = acc[it.author] + 1 || 1;
+    return acc;
+  }, {});
 
-  for (const blog of blogs) {
-    if (!authorBlogs[blog.author]) {
-      authorBlogs[blog.author] = 0;
-    }
-
-    authorBlogs[blog.author] = authorBlogs[blog.author] + 1;
-  }
-
-  const maxEntry = Object.entries(authorBlogs).reduce((prev, curr) =>
-    prev.blogs > curr.blogs ? prev : curr
+  const maxEntry = Object.entries(groupByBlogs).reduce((prev, curr) =>
+    prev[1] > curr[1] ? prev : curr
   );
 
   return {
@@ -35,9 +30,26 @@ const mostBlogs = (blogs) => {
   };
 };
 
+const mostLikes = (blogs) => {
+  const groupByLikes = blogs.reduce((acc, it) => {
+    acc[it.author] = acc[it.author] + it.likes || it.likes;
+    return acc;
+  }, {});
+
+  const maxEntry = Object.entries(groupByLikes).reduce((prev, curr) =>
+    prev[1] > curr[1] ? prev : curr
+  );
+
+  return {
+    author: maxEntry[0],
+    likes: maxEntry[1],
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };

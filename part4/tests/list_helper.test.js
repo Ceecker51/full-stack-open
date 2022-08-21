@@ -97,3 +97,15 @@ describe('most blogs', () => {
     expect(result).toEqual(obj);
   });
 });
+
+describe('most likes', () => {
+  test('author with most likes', () => {
+    const obj = {
+      author: 'Edsger W. Dijkstra',
+      likes: 17,
+    };
+
+    const result = listHelper.mostLikes(blogs);
+    expect(result).toEqual(obj);
+  });
+});
