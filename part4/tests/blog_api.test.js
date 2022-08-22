@@ -54,6 +54,7 @@ test('a blog post can be added', async () => {
     title: 'Learning JavaScript Design Patterns',
     author: 'Addy Osmani',
     url: 'https://www.patterns.dev/posts/classic-design-patterns/',
+    likes: 5,
   };
 
   await api
@@ -69,6 +70,25 @@ test('a blog post can be added', async () => {
 
   const titles = blogsAtEnd.map((blog) => blog.title);
   expect(titles).toContain('Learning JavaScript Design Patterns');
+});
+
+test('blog post without likes property is set to zero', async () => {
+  const newBlog = {
+    title: 'Learning JavaScript Design Patterns',
+    author: 'Addy Osmani',
+    url: 'https://www.patterns.dev/posts/classic-design-patterns/',
+  };
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blog = response.body;
+  
+  expect(blog.likes).toBeDefined();
+  expect(blog.likes).toBe(0);
 });
 
 afterAll(() => {
