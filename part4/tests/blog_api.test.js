@@ -16,6 +16,20 @@ beforeEach(async () => {
 });
 
 // #############################
+// Formatting
+// #############################
+
+test('verify unique idenfitifier format', async () => {
+  const response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
+  const blog = response.body[0];
+  expect(blog.id).toBeDefined();
+});
+
+// #############################
 // GET /api/blogs
 // #############################
 
