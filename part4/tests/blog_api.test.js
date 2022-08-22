@@ -63,9 +63,7 @@ test('a blog post can be added', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/);
 
-  const blogs = await Blog.find({});
-
-  const blogsAtEnd = blogs.map((blog) => blog.toJSON());
+  const blogsAtEnd = await testHelper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(testHelper.initialBlogs.length + 1);
 
   const titles = blogsAtEnd.map((blog) => blog.title);
@@ -86,9 +84,20 @@ test('blog post without likes property is set to zero', async () => {
     .expect('Content-Type', /application\/json/);
 
   const blog = response.body;
-  
+
   expect(blog.likes).toBeDefined();
   expect(blog.likes).toBe(0);
+});
+
+test('blog without title and url properties is not added', async () => {
+  const newBlog = {
+    author: 'Addy Osmani',
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+
+  const blogsAtEnd = await testHelper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(testHelper.initialBlogs.length);
 });
 
 afterAll(() => {
