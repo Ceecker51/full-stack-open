@@ -10,7 +10,8 @@ blogRouter.post('/', async (request, response) => {
   const body = request.body;
 
   if (!body.title && !body.url) {
-    response.status(400).send();
+    response.status(400).end();
+    return;
   }
 
   const blog = new Blog({
@@ -22,6 +23,15 @@ blogRouter.post('/', async (request, response) => {
 
   const result = await blog.save();
   response.status(201).json(result);
+});
+
+blogRouter.delete('/:id', async (request, response) => {
+  try {
+    await Blog.findByIdAndRemove(request.params.id);
+    response.status(204).end();
+  } catch (exception) {
+    response.status(404).end();
+  }
 });
 
 module.exports = blogRouter;
