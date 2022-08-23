@@ -129,17 +129,19 @@ test('fails with status code 404 if id is invalid', async () => {
 
 test('succeeds with status code 200 if blog is valid', async () => {
   const blogAtStart = await testHelper.blogsInDb();
-
   const blogToUpdate = blogAtStart[0];
+
   blogToUpdate.title = 'This is a updated title';
+  blogToUpdate.likes = 20;
 
   await api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate).expect(201);
 
   const blogsAtEnd = await testHelper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(testHelper.initialBlogs.length);
 
-  const titles = blogsAtEnd.map((blog) => blog.title);
-  expect(titles).toContain('This is a updated title');
+  const blogUpdated = blogsAtEnd.find((blog) => blogToUpdate.id === blog.id);
+  expect(blogUpdated.title).toEqual('This is a updated title');
+  expect(blogUpdated.likes).toBe(20);
 });
 
 test('fails with status code 404 if id is invalid', async () => {
