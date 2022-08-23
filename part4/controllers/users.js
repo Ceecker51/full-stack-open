@@ -14,7 +14,12 @@ usersRouter.post('/', async (request, response) => {
   // validate username
   const existingUser = await User.findOne({ username });
   if (existingUser) {
-    return response.status(400).json({ error: 'username must be unique' });
+    return response.status(409).json({ error: 'username must be unique' });
+  }
+
+  // validate password
+  if (!(password && password.length >= 3)) {
+    return response.status(400).json({ error: 'password is invalid' });
   }
 
   // calculate hash of password
