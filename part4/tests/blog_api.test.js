@@ -123,6 +123,31 @@ test('fails with status code 404 if id is invalid', async () => {
   await api.delete(`/api/blogs/${invalidId}`).expect(404);
 });
 
+// #############################
+// PUT /api/blogs/:id
+// #############################
+
+test('succeeds with status code 200 if blog is valid', async () => {
+  const blogAtStart = await testHelper.blogsInDb();
+
+  const blogToUpdate = blogAtStart[0];
+  blogToUpdate.title = 'This is a updated title';
+
+  await api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate).expect(201);
+
+  const blogsAtEnd = await testHelper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(testHelper.initialBlogs.length);
+
+  const titles = blogsAtEnd.map((blog) => blog.title);
+  expect(titles).toContain('This is a updated title');
+});
+
+test('fails with status code 404 if id is invalid', async () => {
+  const invalidId = '5a3d5da59070081a82a3445';
+
+  await api.put(`/api/blogs/${invalidId}`).expect(404);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
