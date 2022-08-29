@@ -1,8 +1,9 @@
 const blogRouter = require('express').Router();
-const jwt = require('jsonwebtoken');
 
 const Blog = require('../models/blog');
 const User = require('../models/user');
+
+const { userExtractor } = require('../utils/middleware');
 
 // ############################
 // Endpoints
@@ -13,20 +14,14 @@ blogRouter.get('/', async (request, response) => {
   response.json(blogs);
 });
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body;
 
   if (!body.title && !body.url) {
     return response.status(400).end();
   }
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' });
-  }
-
-  const user = await User.findById(decodedToken.id);
+  const user = await User.findById(request.userid);
 
   const blog = new Blog({
     title: body.title,
@@ -43,24 +38,22 @@ blogRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
-blogRouter.delete('/:id', async (request, response) => {
+blogRouter.delete('/:id', userExtractor, async (request, response) => {
   try {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' });
-    }
-
     const blog = await Blog.findById(request.params.id);
-    const userid = decodedToken.id;
 
-    if (blog.user.toString() !== userid.toString()) {
+    if (blog.user.toString() !== request.userid.toString()) {
       return response.status(401).json({
         error: 'blog can only deleted by the user who added the blog.',
       });
     }
 
     await Blog.findByIdAndRemove(blog._id);
+
+    const user = await User.findById(request.userid);
+    user.blogs = user.blogs.filter(id => id !== blog.id);
+    await user.save();
+
     response.status(204).end();
   } catch (exception) {
     response.status(404).end();

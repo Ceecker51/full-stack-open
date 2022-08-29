@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const logger = require('./logger');
 
 const unknownEndpoint = (_, response) => {
@@ -24,8 +26,21 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
+const userExtractor = (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  request.userid = decodedToken.id;
+
+  next();
+}
+
 module.exports = {
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
+  userExtractor
 };
