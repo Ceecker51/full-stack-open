@@ -24,13 +24,13 @@ usersRouter.post('/', async (request, response) => {
 
   // calculate hash of password
   const saltRounds = 10;
-  const pwdHash = await bcrypt.hash(password, saltRounds);
+  const passwordHash = await bcrypt.hash(password, saltRounds);
 
   // create new user
   const user = new User({
     username,
     name,
-    pwdHash,
+    passwordHash,
   });
 
   const savedUser = await user.save();
