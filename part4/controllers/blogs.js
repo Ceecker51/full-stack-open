@@ -5,20 +5,6 @@ const Blog = require('../models/blog');
 const User = require('../models/user');
 
 // ############################
-// Helper Methods
-// ############################
-
-const getTokenFromRequest = (request) => {
-  const authorization = request.get('authorization');
-
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7);
-  }
-
-  return null;
-};
-
-// ############################
 // Endpoints
 // ############################
 
@@ -59,7 +45,22 @@ blogRouter.post('/', async (request, response) => {
 
 blogRouter.delete('/:id', async (request, response) => {
   try {
-    await Blog.findByIdAndRemove(request.params.id);
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' });
+    }
+
+    const blog = await Blog.findById(request.params.id);
+    const userid = decodedToken.id;
+
+    if (blog.user.toString() !== userid.toString()) {
+      return response.status(401).json({
+        error: 'blog can only deleted by the user who added the blog.',
+      });
+    }
+
+    await Blog.findByIdAndRemove(blog._id);
     response.status(204).end();
   } catch (exception) {
     response.status(404).end();
