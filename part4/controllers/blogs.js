@@ -1,7 +1,26 @@
 const blogRouter = require('express').Router();
+const jwt = require('jsonwebtoken');
 
 const Blog = require('../models/blog');
 const User = require('../models/user');
+
+// ############################
+// Helper Methods
+// ############################
+
+const getTokenFromRequest = (request) => {
+  const authorization = request.get('authorization');
+
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7);
+  }
+
+  return null;
+};
+
+// ############################
+// Endpoints
+// ############################
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
@@ -12,12 +31,17 @@ blogRouter.post('/', async (request, response) => {
   const body = request.body;
 
   if (!body.title && !body.url) {
-    response.status(400).end();
-    return;
+    return response.status(400).end();
   }
 
-  const users = await User.find({});
-  const user = users[0];
+  const token = getTokenFromRequest(request);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' });
+  }
+
+  const user = await User.findById(decodedToken.id);
 
   const blog = new Blog({
     title: body.title,
