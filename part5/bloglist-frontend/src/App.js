@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
+import Notification from './components/Notification';
 
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -20,6 +21,13 @@ const App = () => {
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
+  // notifications
+  const [notifyMessage, setNotifyMessage] = useState(null);
+
+  // ########################
+  // Effect hooks
+  // ########################
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -34,6 +42,15 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
+
+  // ########################
+  // Actions
+  // ########################
+
+  const showMessage = (type, text) => {
+    setNotifyMessage({ type, text });
+    setTimeout(() => setNotifyMessage(null), 5000);
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -50,8 +67,8 @@ const App = () => {
 
       setUsername('');
       setPassword('');
-    } catch (exception) {
-      console.error(exception);
+    } catch (error) {
+      showMessage('error', error.response.data.error);
     }
   };
 
@@ -78,8 +95,13 @@ const App = () => {
       setTitle('');
       setAuthor('');
       setUrl('');
-    } catch (exception) {
-      console.error(exception);
+
+      showMessage(
+        'success',
+        `A new blog ${blogObject.title} by ${blogObject.author} added`
+      );
+    } catch (error) {
+      showMessage('error', error.response.data.error);
     }
   };
 
@@ -87,6 +109,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification message={notifyMessage} />
         <LoginForm
           username={username}
           password={password}
@@ -101,6 +124,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={notifyMessage} />
       <div>
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
