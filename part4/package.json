@@ -1,13 +1,14 @@
 {
-  "name": "bloglist",
+  "name": "bloglist-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "dev": "npm run build:ui && cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
     "debug": "cross-env NODE_ENV=production node --inspect index.js",
-    "start": "cross-env NODE_ENV=production node index.js"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "build:ui": "rm -rf build && cd ../part5/bloglist-frontend/ && npm run build && cp -r build ../../part4"
   },
   "author": "Marco Goebel",
   "license": "MIT",
