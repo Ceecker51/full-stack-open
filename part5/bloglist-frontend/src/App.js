@@ -122,6 +122,27 @@ const App = () => {
     }
   };
 
+  const removeBlog = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+
+    const result = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author}`
+    );
+
+    if (result) {
+      try {
+        await blogService.remove(id);
+        setBlogs(blogs.filter((blog) => blog.id !== id));
+        showMessage(
+          'success',
+          `blog ${blog.title} by ${blog.author} was deleted!`
+        );
+      } catch (error) {
+        showMessage('error', error.response.data.error);
+      }
+    }
+  };
+
   // ########################
   // Helper
   // ########################
@@ -171,7 +192,13 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} addLike={() => handleLike(blog.id)} />
+        <Blog
+          key={blog.id}
+          user={user}
+          blog={blog}
+          addLike={() => handleLike(blog.id)}
+          removeBlog={() => removeBlog(blog.id)}
+        />
       ))}
     </div>
   );
