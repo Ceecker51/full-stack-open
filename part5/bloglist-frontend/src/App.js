@@ -101,6 +101,27 @@ const App = () => {
     }
   };
 
+  const handleLike = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+    const changedBlog = { ...blog, likes: blog.likes + 1 };
+
+    try {
+      const returnedBlog = await blogService.update(id, changedBlog);
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+      showMessage(
+        'success',
+        `Blog ${returnedBlog.title} was updated on server`
+      );
+    } catch (error) {
+      setBlogs(blogs.filter((n) => n.id !== id));
+      showMessage('error', error.response.data.error);
+    }
+  };
+
+  // #############################
+  // Appearance
+  // #############################
+
   if (user === null) {
     return (
       <div>
@@ -132,7 +153,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={() => handleLike(blog.id)} />
       ))}
     </div>
   );
