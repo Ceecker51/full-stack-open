@@ -35,7 +35,7 @@ const App = () => {
   // ########################
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => setBlogs(blogs.sort(sortByLikes)));
   }, []);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       const returnedBlog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(returnedBlog));
+      setBlogs(blogs.concat(returnedBlog).sort(sortByLikes));
 
       blogFormRef.current.toggleVisibility();
 
@@ -107,7 +107,11 @@ const App = () => {
 
     try {
       const returnedBlog = await blogService.update(id, changedBlog);
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+      setBlogs(
+        blogs
+          .map((blog) => (blog.id !== id ? blog : returnedBlog))
+          .sort(sortByLikes)
+      );
       showMessage(
         'success',
         `Blog ${returnedBlog.title} was updated on server`
@@ -116,6 +120,20 @@ const App = () => {
       setBlogs(blogs.filter((n) => n.id !== id));
       showMessage('error', error.response.data.error);
     }
+  };
+
+  // ########################
+  // Helper
+  // ########################
+
+  const sortByLikes = (a, b) => {
+    if (a.likes > b.likes) {
+      return -1;
+    } else if (a.likes < b.likes) {
+      return 1;
+    }
+
+    return 0;
   };
 
   // #############################
