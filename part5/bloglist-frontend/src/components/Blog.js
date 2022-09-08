@@ -21,7 +21,7 @@ const Blog = ({ user, blog, addLike, removeBlog }) => {
 
   const showDetails = () => {
     return (
-      <div>
+      <div className="blog-details">
         <div>{blog.url}</div>
         <div>
           likes {blog.likes}
@@ -34,7 +34,7 @@ const Blog = ({ user, blog, addLike, removeBlog }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       {blog.title} {blog.author}
       <button onClick={toggleDetailsVisibility}>
         {detailsVisible ? 'hide' : 'view'}
