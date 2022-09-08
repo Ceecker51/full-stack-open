@@ -49,3 +49,37 @@ test('Blog renders details when view button is clicked', async () => {
   const details = container.querySelector('.blog-details');
   expect(details).toBeInTheDocument();
 });
+
+test('Clicking on like button twice', async () => {
+  const blog = {
+    title: 'TestTitle',
+    author: 'TestAuthor',
+    url: 'http://www.test-url.de',
+    likes: 2,
+    user: {
+      username: 'TestUser',
+    },
+  };
+
+  const user = {
+    username: 'TestUser',
+  };
+
+  const mockHandlerView = jest.fn();
+  const mockHandlerLike = jest.fn();
+
+  render(<Blog blog={blog} user={user} addLike={mockHandlerLike} />);
+
+  const userAction = userEvent.setup();
+
+  const btnView = screen.getByText('view');
+  btnView.onclick = mockHandlerView;
+  await userAction.click(btnView);
+
+  const btnLike = screen.getByText('like');
+  await userAction.click(btnLike);
+  await userAction.click(btnLike);
+
+  expect(mockHandlerView.mock.calls).toHaveLength(1);
+  expect(mockHandlerLike.mock.calls).toHaveLength(2);
+});
