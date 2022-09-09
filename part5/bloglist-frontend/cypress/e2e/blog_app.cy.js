@@ -112,5 +112,45 @@ describe('Blog app', function () {
         cy.contains('TestTitle TestAuthor').should('not.contain', 'remove');
       });
     });
+
+    describe('and several blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'The title with the second most likes',
+          author: 'second most',
+          url: 'http://second.most',
+        });
+        cy.createBlog({
+          title: 'The title with the most likes',
+          author: 'most',
+          url: 'http://most',
+        });
+      });
+
+      it('blogs are ordered according to the most likes being first', function () {
+        cy.contains('The title with the most likes')
+          .find('button')
+          .as('viewButton');
+
+        cy.get('@viewButton').click();
+        cy.get('@viewButton').parent().contains('like').click();
+        cy.wait(500);
+        cy.get('@viewButton').parent().contains('like').click();
+
+        cy.contains('The title with the second most likes')
+          .find('button')
+          .as('viewButton');
+
+        cy.get('@viewButton').click();
+        cy.get('@viewButton').parent().contains('like').click();
+
+        cy.get('.blog')
+          .eq(0)
+          .should('contain', 'The title with the most likes');
+        cy.get('.blog')
+          .eq(1)
+          .should('contain', 'The title with the second most likes');
+      });
+    });
   });
 });
