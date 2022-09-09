@@ -63,5 +63,28 @@ describe('Blog app', function () {
 
       cy.contains('TestTitle TestAuthor');
     });
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'TestTitle',
+          author: 'TestAuthor',
+          url: 'http://www.testurl.de',
+        });
+      });
+
+      it('blog can be liked by user', function () {
+        cy.contains('TestTitle TestAuthor');
+        cy.contains('view').click();
+        cy.contains('like').click();
+
+        cy.get('.notification')
+          .should('contain', 'Blog TestTitle was updated on server')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+          .and('have.css', 'border-style', 'solid');
+
+        cy.contains('likes 1');
+      });
+    });
   });
 });
