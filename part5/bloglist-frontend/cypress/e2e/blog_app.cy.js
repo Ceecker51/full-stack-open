@@ -41,4 +41,27 @@ describe('Blog app', function () {
       cy.get('html').should('not.contain', 'Matti Luukkainen logged in');
     });
   });
+
+  describe('When logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'mluukkai', password: 'salainen' });
+    });
+
+    it('A blog can be created', function () {
+      cy.contains('create new blog').click();
+
+      cy.get('#input-title').type('TestTitle');
+      cy.get('#input-author').type('TestAuthor');
+      cy.get('#input-url').type('http://www.testurl.de');
+
+      cy.get('.submit-button').click();
+
+      cy.get('.notification')
+        .should('contain', 'A new blog TestTitle by TestAuthor added')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+        .and('have.css', 'border-style', 'solid');
+
+      cy.contains('TestTitle TestAuthor');
+    });
+  });
 });
