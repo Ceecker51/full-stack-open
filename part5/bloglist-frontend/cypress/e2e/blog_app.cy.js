@@ -85,6 +85,32 @@ describe('Blog app', function () {
 
         cy.contains('likes 1');
       });
+
+      it('blog can be delete by user', function () {
+        cy.contains('TestTitle TestAuthor');
+        cy.contains('view').click();
+        cy.contains('remove').click();
+
+        cy.get('.notification')
+          .should('contain', 'blog TestTitle by TestAuthor was deleted!')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+          .and('have.css', 'border-style', 'solid');
+
+        cy.get('html').should('not.contain', 'TestTitle TestAuthor');
+      });
+
+      it('blog can not be delete by other user', function () {
+        const user = { username: 'testuser', name: 'test', password: 'test' };
+        cy.request('POST', 'http://localhost:3003/api/users/', user);
+        cy.login(user);
+
+        cy.contains('test logged in');
+
+        cy.contains('TestTitle TestAuthor');
+        cy.contains('view').click();
+
+        cy.contains('TestTitle TestAuthor').should('not.contain', 'remove');
+      });
     });
   });
 });
