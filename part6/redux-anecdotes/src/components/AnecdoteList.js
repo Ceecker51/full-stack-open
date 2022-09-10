@@ -20,11 +20,15 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
-  const anecdotes = useSelector((state) => state.anecdotes);
+  const anecdotes = useSelector(({ anecdotes, filter }) => {
+    return filter
+      ? anecdotes.filter((anecdote) => anecdote.content.includes(filter))
+      : anecdotes;
+  });
 
   const vote = (anecdote) => {
     dispatch(voteAnecdote(anecdote.id));
-    dispatch(setNotification(`you added ${anecdote.content}`));
+    dispatch(setNotification(`you voted ${anecdote.content}`));
     setTimeout(() => dispatch(removeNotification()), 5000);
   };
 
