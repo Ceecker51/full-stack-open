@@ -15,11 +15,7 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
-  const anecdotes = useSelector((state) => state);
-
-  const vote = (id) => {
-    dispatch(voteAnecdote(id));
-  };
+  const anecdotes = useSelector((state) => state.anecdotes);
 
   const sortByVotes = (a, b) => {
     if (a.votes > b.votes) {
@@ -37,7 +33,7 @@ const AnecdoteList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => vote(anecdote.id)}
+          handleClick={() => dispatch(voteAnecdote(anecdote.id))}
         />
       ))}
     </div>
