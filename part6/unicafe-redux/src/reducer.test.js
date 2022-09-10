@@ -64,11 +64,15 @@ describe('unicafe reducer', () => {
     });
   });
 
-  test('zero does note change state', () => {
+  test('zero does reset state', () => {
     const action = {
       type: 'ZERO',
     };
-    const state = initialState;
+    const state = {
+      good: 5,
+      ok: 3,
+      bad: 2,
+    };
 
     deepFreeze(state);
     const newState = counterReducer(state, action);
