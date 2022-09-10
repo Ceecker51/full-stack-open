@@ -6,7 +6,6 @@ const App = () => {
   const anecdotes = useSelector((state) => state);
 
   const vote = (id) => {
-    console.log('vote', id);
     dispatch(voteAnecdote(id));
   };
 
