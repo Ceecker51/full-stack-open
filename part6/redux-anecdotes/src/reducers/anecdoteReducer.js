@@ -1,10 +1,3 @@
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    votes: 0,
-  };
-};
-
 const reducer = (state = [], action) => {
   switch (action.type) {
     case 'VOTE':
@@ -37,10 +30,10 @@ export const voteAnecdote = (id) => {
   };
 };
 
-export const createAnecdote = (content) => {
+export const createAnecdote = (anecdote) => {
   return {
     type: 'NEW_ANECDOTE',
-    data: asObject(content),
+    data: anecdote,
   };
 };
 
