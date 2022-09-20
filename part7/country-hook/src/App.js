@@ -18,24 +18,18 @@ const useField = (type) => {
 const useCountry = (name) => {
   const [country, setCountry] = useState(null);
 
-  const fetchCountryFullName = async (name) => {
+  useEffect(() => {
     if (!name) {
       return;
     }
 
-    try {
-      const url = `https://restcountries.com/v3.1/name/${name}?fullText=true`;
-
-      const response = await axios.get(url);
-      const countries = response.data;
-
-      setCountry(countries.length > 0 ? countries[0] : null);
-    } catch (exception) {
-    }
-  };
-
-  useEffect(() => {
-    fetchCountryFullName(name);
+    axios
+      .get(`https://restcountries.com/v3.1/name/${name}?fullText=true`)
+      .then((response) => {
+        const countries = response.data;
+        setCountry(countries.length > 0 ? countries[0] : null);
+      })
+      .catch((error) => {});
   }, [name]);
 
   return country;
