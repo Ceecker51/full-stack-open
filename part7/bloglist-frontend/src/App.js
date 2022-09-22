@@ -87,19 +87,6 @@ const App = () => {
     setUser(null);
   };
 
-  const addBlog = async (blogObject) => {
-    try {
-      const returnedBlog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(returnedBlog));
-
-      blogFormRef.current.toggleVisibility();
-
-      showMessage('success', `A new blog ${blogObject.title} by ${blogObject.author} added`);
-    } catch (error) {
-      showMessage('error', error.response.data.error);
-    }
-  };
-
   const handleLike = async (id) => {
     const blog = blogs.find((blog) => blog.id === id);
     const changedBlog = { ...blog, likes: blog.likes + 1 };
@@ -164,7 +151,7 @@ const App = () => {
         </p>
       </div>
       <Togglable btnLabel="create new blog" ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
+        <BlogForm toggleVisibility={() => blogFormRef.current.toggleVisibility()} />
       </Togglable>
 
       {blogs.map((blog) => (
