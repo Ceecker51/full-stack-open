@@ -11,7 +11,7 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 import { setNotification } from './reducers/notificationReducer';
-import { initializeBlogs, setBlogs, createBlog } from './reducers/blogReducer';
+import { initializeBlogs, setBlogs, createBlog, deleteBlog } from './reducers/blogReducer';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -93,15 +93,11 @@ const App = () => {
     const blog = blogs.find((blog) => blog.id === id);
 
     const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
-    if (result) {
-      try {
-        await blogService.remove(id);
-        setBlogs(blogs.filter((blog) => blog.id !== id));
-        showMessage('success', `blog ${blog.title} by ${blog.author} was deleted!`);
-      } catch (error) {
-        showMessage('error', error.response.data.error);
-      }
+    if (!result) {
+      return;
     }
+
+    dispatch(deleteBlog(blog));
   };
 
   if (user === null) {

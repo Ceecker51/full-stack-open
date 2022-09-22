@@ -20,13 +20,17 @@ const blogSlice = createSlice({
     setBlogs(state, action) {
       return action.payload.sort(sortByLikes);
     },
-    appendBlogs(state, action) {
+    appendBlog(state, action) {
       state.push(action.payload);
+    },
+    removeBlog(state, action) {
+      const id = action.payload;
+      return state.filter((blog) => blog.id !== id);
     },
   },
 });
 
-export const { setBlogs, appendBlogs } = blogSlice.actions;
+export const { setBlogs, appendBlog, removeBlog } = blogSlice.actions;
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -35,16 +39,26 @@ export const initializeBlogs = () => {
   };
 };
 
-export const createBlog = (blogObject) => {
+export const createBlog = (blog) => {
   return async (dispatch) => {
     try {
-      const newBlog = await blogService.create(blogObject);
-      dispatch(appendBlogs(newBlog));
-      dispatch(
-        setNotification('success', `creat blog ${blogObject.title} by ${blogObject.author}`, 5)
-      );
+      const newBlog = await blogService.create(blog);
+      dispatch(appendBlog(newBlog));
+      dispatch(setNotification('success', `create blog ${blog.title}`, 5));
     } catch (error) {
-      dispatch(setNotification('error', error.response.data.error));
+      dispatch(setNotification('error', error.response.data.error, 5));
+    }
+  };
+};
+
+export const deleteBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      await blogService.remove(blog.id);
+      dispatch(removeBlog(blog.id));
+      dispatch(setNotification('success', `delete blog ${blog.title}`, 5));
+    } catch (error) {
+      dispatch(setNotification('error', error.response.data.error, 5));
     }
   };
 };
