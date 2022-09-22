@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
@@ -9,10 +10,13 @@ import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
+import { setNotification } from './reducers/notificationReducer';
+
 const App = () => {
   // ############################
   // Component State
   // ############################
+  const dispatch = useDispatch();
 
   const [blogs, setBlogs] = useState([]);
 
@@ -20,9 +24,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-
-  // notifications
-  const [notifyMessage, setNotifyMessage] = useState(null);
 
   // ########################
   // Component References
@@ -54,8 +55,7 @@ const App = () => {
   // ########################
 
   const showMessage = (type, text) => {
-    setNotifyMessage({ type, text });
-    setTimeout(() => setNotifyMessage(null), 5000);
+    dispatch(setNotification({ type, text }, 5));
   };
 
   const handleLogin = async (event) => {
@@ -73,6 +73,8 @@ const App = () => {
 
       setUsername('');
       setPassword('');
+
+      showMessage('success', `Welcome ${user.name}!`);
     } catch (error) {
       showMessage('error', error.response.data.error);
     }
@@ -150,7 +152,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification message={notifyMessage} />
+        <Notification />
         <LoginForm
           username={username}
           password={password}
@@ -165,7 +167,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={notifyMessage} />
+      <Notification />
       <div>
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
