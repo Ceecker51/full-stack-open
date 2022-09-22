@@ -24,13 +24,17 @@ const blogSlice = createSlice({
       state.push(action.payload);
     },
     removeBlog(state, action) {
-      const id = action.payload;
-      return state.filter((blog) => blog.id !== id);
+      const id = action.payload.id;
+      return state.filter((blog) => blog.id !== id).sort(sortByLikes);
+    },
+    updateBlog(state, action) {
+      const id = action.payload.id;
+      return state.map((blog) => (blog.id !== id ? blog : action.payload)).sort(sortByLikes);
     },
   },
 });
 
-export const { setBlogs, appendBlog, removeBlog } = blogSlice.actions;
+export const { setBlogs, appendBlog, removeBlog, updateBlog } = blogSlice.actions;
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -44,7 +48,7 @@ export const createBlog = (blog) => {
     try {
       const newBlog = await blogService.create(blog);
       dispatch(appendBlog(newBlog));
-      dispatch(setNotification('success', `create blog ${blog.title}`, 5));
+      dispatch(setNotification('success', `created blog ${blog.title}`, 5));
     } catch (error) {
       dispatch(setNotification('error', error.response.data.error, 5));
     }
@@ -55,9 +59,24 @@ export const deleteBlog = (blog) => {
   return async (dispatch) => {
     try {
       await blogService.remove(blog.id);
-      dispatch(removeBlog(blog.id));
-      dispatch(setNotification('success', `delete blog ${blog.title}`, 5));
+      dispatch(removeBlog(blog));
+      dispatch(setNotification('success', `deleted blog ${blog.title}`, 5));
     } catch (error) {
+      dispatch(setNotification('error', error.response.data.error, 5));
+    }
+  };
+};
+
+export const likeBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      const changedBlog = { ...blog, likes: blog.likes + 1 };
+      const updatedBlog = await blogService.update(changedBlog);
+
+      dispatch(updateBlog(updatedBlog));
+      dispatch(setNotification('success', `updated blog ${updatedBlog.title}`, 5));
+    } catch (error) {
+      console.log(error);
       dispatch(setNotification('error', error.response.data.error, 5));
     }
   };

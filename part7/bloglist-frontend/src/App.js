@@ -11,7 +11,7 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 import { setNotification } from './reducers/notificationReducer';
-import { initializeBlogs, setBlogs, createBlog, deleteBlog } from './reducers/blogReducer';
+import { initializeBlogs, createBlog, deleteBlog, likeBlog } from './reducers/blogReducer';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -70,23 +70,14 @@ const App = () => {
     setUser(null);
   };
 
-  const handleLike = async (id) => {
-    const blog = blogs.find((blog) => blog.id === id);
-    const changedBlog = { ...blog, likes: blog.likes + 1 };
-
-    try {
-      const returnedBlog = await blogService.update(id, changedBlog);
-      dispatch(setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog))));
-      showMessage('success', `Blog ${returnedBlog.title} was updated on server`);
-    } catch (error) {
-      setBlogs(blogs.filter((n) => n.id !== id));
-      showMessage('error', error.response.data.error);
-    }
-  };
-
   const addBlog = (blogObject) => {
     dispatch(createBlog(blogObject));
     blogFormRef.current.toggleVisibility();
+  };
+
+  const handleLike = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+    dispatch(likeBlog(blog));
   };
 
   const removeBlog = async (id) => {
