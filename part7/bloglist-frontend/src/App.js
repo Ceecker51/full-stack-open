@@ -16,17 +16,10 @@ import { initializeBlogs, setBlogs, createBlog } from './reducers/blogReducer';
 const App = () => {
   const dispatch = useDispatch();
 
-  // ############################
-  // Component State
-  // ############################
+  const blogs = useSelector((state) => state.blogs);
+  const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
-  const blogs = useSelector((state) => state.blogs);
-
-  // login
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
 
   // ########################
   // Effect hooks
@@ -55,21 +48,14 @@ const App = () => {
     dispatch(setNotification({ type, text }, 5));
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
+  const handleLogin = async (userObject) => {
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
+      const user = await loginService.login(userObject);
 
       window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
 
-      setUsername('');
-      setPassword('');
+      setUser(user);
 
       showMessage('success', `Welcome ${user.name}!`);
     } catch (error) {
@@ -114,7 +100,6 @@ const App = () => {
     const blog = blogs.find((blog) => blog.id === id);
 
     const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
-
     if (result) {
       try {
         await blogService.remove(id);
@@ -126,26 +111,12 @@ const App = () => {
     }
   };
 
-  // ########################
-  // Helper
-  // ########################
-
-  // #############################
-  // Appearance
-  // #############################
-
   if (user === null) {
     return (
       <div>
         <h2>log in to application</h2>
         <Notification />
-        <LoginForm
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
-        />
+        <LoginForm handleLogin={handleLogin} />
       </div>
     );
   }
