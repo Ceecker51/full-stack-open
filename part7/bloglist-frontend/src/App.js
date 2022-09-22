@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
@@ -11,14 +11,14 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 import { setNotification } from './reducers/notificationReducer';
+import { initializeBlogs, setBlogs } from './reducers/blogReducer';
 
 const App = () => {
   // ############################
   // Component State
   // ############################
   const dispatch = useDispatch();
-
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
 
   // login
   const [username, setUsername] = useState('');
@@ -36,8 +36,8 @@ const App = () => {
   // ########################
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs.sort(sortByLikes)));
-  }, []);
+    dispatch(initializeBlogs());
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser');
@@ -90,7 +90,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       const returnedBlog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(returnedBlog).sort(sortByLikes));
+      setBlogs(blogs.concat(returnedBlog));
 
       blogFormRef.current.toggleVisibility();
 
@@ -106,7 +106,7 @@ const App = () => {
 
     try {
       const returnedBlog = await blogService.update(id, changedBlog);
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)).sort(sortByLikes));
+      dispatch(setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog))));
       showMessage('success', `Blog ${returnedBlog.title} was updated on server`);
     } catch (error) {
       setBlogs(blogs.filter((n) => n.id !== id));
@@ -133,16 +133,6 @@ const App = () => {
   // ########################
   // Helper
   // ########################
-
-  const sortByLikes = (a, b) => {
-    if (a.likes > b.likes) {
-      return -1;
-    } else if (a.likes < b.likes) {
-      return 1;
-    }
-
-    return 0;
-  };
 
   // #############################
   // Appearance
