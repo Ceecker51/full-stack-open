@@ -36,9 +36,7 @@ const Blog = ({ user, blog, addLike, removeBlog }) => {
   return (
     <div className="blog" style={blogStyle}>
       {blog.title} {blog.author}
-      <button onClick={toggleDetailsVisibility}>
-        {detailsVisible ? 'hide' : 'view'}
-      </button>
+      <button onClick={toggleDetailsVisibility}>{detailsVisible ? 'hide' : 'view'}</button>
       {detailsVisible ? showDetails() : null}
     </div>
   );

@@ -18,7 +18,7 @@
     "cypress:open": "cypress open",
     "test:e2e": "cypress run",
     "lint": "eslint .",
-    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrec"
+    "format": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" --config ./.prettierrc"
   },
   "eslintConfig": {
     "extends": [

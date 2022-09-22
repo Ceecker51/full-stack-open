@@ -20,7 +20,11 @@ const Notification = ({ message }) => {
     marginBottom: 10,
   };
 
-  return <div className="notification" style={messageStyle}>{message.text}</div>;
+  return (
+    <div className="notification" style={messageStyle}>
+      {message.text}
+    </div>
+  );
 };
 
 export default Notification;

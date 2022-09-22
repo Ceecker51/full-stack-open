@@ -2,15 +2,12 @@
 module.exports = {
   env: {
     browser: true,
+    node: true,
     es6: true,
     'jest/globals': true,
     'cypress/globals': true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -31,6 +28,7 @@ module.exports = {
     'no-console': 0,
     'react/prop-types': 0,
     'react/react-in-jsx-scope': 'off',
+    'no-unused-vars': ['error', { args: 'none' }],
   },
   settings: {
     react: {

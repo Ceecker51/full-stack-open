@@ -92,10 +92,7 @@ const App = () => {
 
       blogFormRef.current.toggleVisibility();
 
-      showMessage(
-        'success',
-        `A new blog ${blogObject.title} by ${blogObject.author} added`
-      );
+      showMessage('success', `A new blog ${blogObject.title} by ${blogObject.author} added`);
     } catch (error) {
       showMessage('error', error.response.data.error);
     }
@@ -107,15 +104,8 @@ const App = () => {
 
     try {
       const returnedBlog = await blogService.update(id, changedBlog);
-      setBlogs(
-        blogs
-          .map((blog) => (blog.id !== id ? blog : returnedBlog))
-          .sort(sortByLikes)
-      );
-      showMessage(
-        'success',
-        `Blog ${returnedBlog.title} was updated on server`
-      );
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)).sort(sortByLikes));
+      showMessage('success', `Blog ${returnedBlog.title} was updated on server`);
     } catch (error) {
       setBlogs(blogs.filter((n) => n.id !== id));
       showMessage('error', error.response.data.error);
@@ -125,18 +115,13 @@ const App = () => {
   const removeBlog = async (id) => {
     const blog = blogs.find((blog) => blog.id === id);
 
-    const result = window.confirm(
-      `Remove blog ${blog.title} by ${blog.author}`
-    );
+    const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
 
     if (result) {
       try {
         await blogService.remove(id);
         setBlogs(blogs.filter((blog) => blog.id !== id));
-        showMessage(
-          'success',
-          `blog ${blog.title} by ${blog.author} was deleted!`
-        );
+        showMessage('success', `blog ${blog.title} by ${blog.author} was deleted!`);
       } catch (error) {
         showMessage('error', error.response.data.error);
       }
