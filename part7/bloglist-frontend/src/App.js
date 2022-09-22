@@ -11,25 +11,22 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 import { setNotification } from './reducers/notificationReducer';
-import { initializeBlogs, setBlogs } from './reducers/blogReducer';
+import { initializeBlogs, setBlogs, createBlog } from './reducers/blogReducer';
 
 const App = () => {
+  const dispatch = useDispatch();
+
   // ############################
   // Component State
   // ############################
-  const dispatch = useDispatch();
+
+  const blogFormRef = useRef();
   const blogs = useSelector((state) => state.blogs);
 
   // login
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-
-  // ########################
-  // Component References
-  // ########################
-
-  let blogFormRef = useRef();
 
   // ########################
   // Effect hooks
@@ -101,6 +98,18 @@ const App = () => {
     }
   };
 
+  const addBlog = (blogObject) => {
+    try {
+      dispatch(createBlog(blogObject));
+
+      blogFormRef.current.toggleVisibility();
+
+      showMessage('success', `A new blog ${blogObject.title} by ${blogObject.author} added`);
+    } catch (error) {
+      showMessage('error', error.response.data.error);
+    }
+  };
+
   const removeBlog = async (id) => {
     const blog = blogs.find((blog) => blog.id === id);
 
@@ -151,7 +160,7 @@ const App = () => {
         </p>
       </div>
       <Togglable btnLabel="create new blog" ref={blogFormRef}>
-        <BlogForm toggleVisibility={() => blogFormRef.current.toggleVisibility()} />
+        <BlogForm createBlog={addBlog} />
       </Togglable>
 
       {blogs.map((blog) => (
