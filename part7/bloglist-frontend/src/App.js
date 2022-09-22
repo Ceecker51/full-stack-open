@@ -45,7 +45,7 @@ const App = () => {
   // ########################
 
   const showMessage = (type, text) => {
-    dispatch(setNotification({ type, text }, 5));
+    dispatch(setNotification(type, text, 5));
   };
 
   const handleLogin = async (userObject) => {
@@ -85,15 +85,8 @@ const App = () => {
   };
 
   const addBlog = (blogObject) => {
-    try {
-      dispatch(createBlog(blogObject));
-
-      blogFormRef.current.toggleVisibility();
-
-      showMessage('success', `A new blog ${blogObject.title} by ${blogObject.author} added`);
-    } catch (error) {
-      showMessage('error', error.response.data.error);
-    }
+    dispatch(createBlog(blogObject));
+    blogFormRef.current.toggleVisibility();
   };
 
   const removeBlog = async (id) => {
