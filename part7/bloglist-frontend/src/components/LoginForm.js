@@ -3,6 +3,8 @@ import { useField } from '../hooks';
 
 import { login } from '../reducers/authReducer';
 
+import { Button, Form } from 'react-bootstrap';
+
 const LoginForm = () => {
   const dispatch = useDispatch();
 
@@ -19,17 +21,17 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input {...username} />
-      </div>
-      <div>
-        password
-        <input {...password} />
-      </div>
-      <button type="submit">login</button>
-    </form>
+    <Form onSubmit={handleLogin}>
+      <Form.Group>
+        <Form.Label>username:</Form.Label>
+        <Form.Control {...username} />
+        <Form.Label>password:</Form.Label>
+        <Form.Control {...password} />
+      </Form.Group>
+      <Button style={{ marginTop: 10 }} type="submit" variant="primary">
+        login
+      </Button>
+    </Form>
   );
 };
 

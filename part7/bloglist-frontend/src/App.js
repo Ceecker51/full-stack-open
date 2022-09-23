@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route, useMatch } from 'react-router-dom';
 
-import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
@@ -10,11 +9,12 @@ import Togglable from './components/Togglable';
 import UserList from './components/UserList';
 import User from './components/User';
 import BlogDetails from './components/BlogDetails';
+import NavMenu from './components/NavMenu';
+import BlogList from './components/BlogList';
 
 import { initializeBlogs, createBlog } from './reducers/blogReducer';
 import { initializeUser } from './reducers/authReducer';
 import { initializeUsers } from './reducers/userReducer';
-import NavMenu from './components/NavMenu';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ const App = () => {
 
   if (authUser === null) {
     return (
-      <div>
+      <div style={{ marginTop: 20 }} className="container">
         <h2>log in to application</h2>
         <Notification />
         <LoginForm />
@@ -66,30 +66,34 @@ const App = () => {
     );
   }
 
-  return (
-    <div>
-      <NavMenu />
-      <h2>blog app</h2>
-      <Notification />
-      <Routes>
-        <Route path="/users/:id" element={<User user={user} />} />
-        <Route path="/users" element={<UserList />} />
-        <Route path="/blogs/:id" element={<BlogDetails blog={blog} />} />
-        <Route
-          path="/"
-          element={
-            <div>
-              <Togglable btnLabel="create new blog" ref={blogFormRef}>
-                <BlogForm createBlog={addBlog} />
-              </Togglable>
+  const resetBlog = () => {
+    blogFormRef.current.toggleVisibility();
+  };
 
-              {blogs.map((blog) => (
-                <Blog key={blog.id} blog={blog} />
-              ))}
-            </div>
-          }
-        />
-      </Routes>
+  return (
+    <div className="container">
+      <NavMenu />
+      <Notification />
+
+      <div style={{ marginTop: 10 }}>
+        <h2>blog app</h2>
+        <Routes>
+          <Route path="/users/:id" element={<User user={user} />} />
+          <Route path="/users" element={<UserList />} />
+          <Route path="/blogs/:id" element={<BlogDetails blog={blog} />} />
+          <Route
+            path="/"
+            element={
+              <div style={{ marginTop: 10 }}>
+                <Togglable btnLabel="create new blog" ref={blogFormRef}>
+                  <BlogForm createBlog={addBlog} resetBlog={resetBlog} />
+                </Togglable>
+                <BlogList />
+              </div>
+            }
+          />
+        </Routes>
+      </div>
     </div>
   );
 };

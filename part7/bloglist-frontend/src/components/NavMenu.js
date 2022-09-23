@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Button, Nav, Navbar } from 'react-bootstrap';
 
 import { logout } from '../reducers/authReducer';
 
@@ -7,31 +8,30 @@ const NavMenu = () => {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.authUser);
 
-  const padding = {
-    paddingRight: 5,
-  };
-
-  const background = {
-    padding: 5,
-    backgroundColor: '#d3d3d3',
-  };
-
   const handleLogout = () => {
     dispatch(logout());
   };
 
   return (
-    <div>
-      <p style={background}>
-        <Link style={padding} to="/">
-          blogs
-        </Link>
-        <Link style={padding} to="/users">
-          users
-        </Link>
-        {authUser.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
-    </div>
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+          <Nav.Link href="#" as="span">
+            <Link to="/">blogs</Link>
+          </Nav.Link>
+          <Nav.Link href="#" as="span">
+            <Link to="/users">users</Link>
+          </Nav.Link>
+          <Nav.Link href="#" as="span">
+            {authUser.name} logged in{' '}
+            <Button variant="secondary" onClick={handleLogout} size="sm">
+              logout
+            </Button>
+          </Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 
