@@ -1,0 +1,98 @@
+@hostname = localhost
+@port = 3003
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@baseUrl = http://{{host}}/api
+
+# @name login
+
+@username = hellas
+@password = ahellas
+
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+###
+
+@authToken = {{login.response.body.token}}
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "Things I Don’t Know as of 2018",
+  "author": "Dan Abramov",
+  "url": "https://overreacted.io/things-i-dont-know-as-of-2018/",
+  "username": "{{username}}"
+}
+
+###
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "Microservices and the First LAW of Distributed Objects",
+  "author": "Martin Fowler",
+  "url": "https://martinfowler.com/articles/distributed-objects-microservices.html",
+  "username": "{{username}}"
+}
+
+###
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "You're NOT gonna need it!",
+  "author": "Martin Fowler",
+  "url": "https://martinfowler.com/bliki/Yagni.html",
+  "username": "{{username}}"
+}
+
+###
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "Our learning from adopting GraphQL",
+  "author": "Artem Shatatnov & Ravi Srinivas Ranganathan",
+  "url": "https://netflixtechblog.com/our-learnings-from-adopting-graphql-f099de39ae5f",
+  "username": "{{username}}"
+}
+
+###
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "The Single Responsibility Principle",
+  "author": "Robert C. Martin",
+  "url": "https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html",
+  "username": "{{username}}"
+}
+
+###
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "React Testing with react-testing-library",
+  "author": "Antony Budianto",
+  "url": "https://medium.com/@antonybudianto/react-testing-with-react-testing-library-3b8554f6acfd",
+  "username": "{{username}}"
+}

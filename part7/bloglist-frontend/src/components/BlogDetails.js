@@ -43,6 +43,12 @@ const BlogDetails = ({ blog }) => {
       </div>
       <div>added by {blog.user.name}</div>
       {showRemoveButton()}
+      <h2>comments</h2>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={comment.id}>{comment.text}</li>
+        ))}
+      </ul>
     </div>
   );
 };

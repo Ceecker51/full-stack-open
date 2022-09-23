@@ -1,0 +1,39 @@
+@hostname = localhost
+@port = 3003
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+@baseUrl = http://{{host}}/api
+
+###
+
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "username": "hellas",
+  "name": "Arto Hellas",
+  "password": "ahellas"
+}
+
+###
+
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "username": "mluukkai",
+  "name": "Matti Luukkainen",
+  "password": "sekret"
+}
+
+###
+
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "username": "vrusska",
+  "name": "Venla Ruuska",
+  "password": "password"
+}

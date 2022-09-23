@@ -1,0 +1,30 @@
+@hostname = localhost
+@port = 3003
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@baseUrl = http://{{host}}/api
+
+###
+
+# @name getAllBlogs
+GET {{baseUrl}}/blogs
+
+###
+
+# @prompt blogId
+POST {{baseUrl}}/blogs/{{blogId}}/comments
+Content-Type: application/json
+
+{
+  "text": "awesome article"
+}
+
+###
+
+# @prompt blogId
+POST {{baseUrl}}/blogs/{{blogId}}/comments
+Content-Type: application/json
+
+{
+  "text": "a must read for every developer"
+}

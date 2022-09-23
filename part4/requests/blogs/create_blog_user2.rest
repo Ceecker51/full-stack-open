@@ -1,0 +1,47 @@
+@hostname = localhost
+@port = 3003
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@baseUrl = http://{{host}}/api
+
+###
+
+@username = mluukkai
+@password = sekret
+
+# @name login
+POST {{baseUrl}}/login
+Content-Type: {{contentType}}
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+###
+
+@authToken = {{login.response.body.token}}
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "FP vs. OO List Processing",
+  "author": "Robert C. Martin",
+  "url": "https://blog.cleancoder.com/uncle-bob/2018/12/17/FPvsOO-List-processing.html",
+  "username": "{{username}}"
+}
+
+###
+
+POST {{baseUrl}}/blogs
+Content-Type: {{contentType}}
+Authorization: bearer {{authToken}}
+
+{
+  "title": "Something new",
+  "author": "Steve Jobs",
+  "url": "http://www.steve-jobs.de",
+  "username": "{{username}}"
+}
