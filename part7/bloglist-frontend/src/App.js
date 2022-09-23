@@ -9,8 +9,9 @@ import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 import UserList from './components/UserList';
 import User from './components/User';
+import BlogDetails from './components/BlogDetails';
 
-import { initializeBlogs, createBlog, deleteBlog, likeBlog } from './reducers/blogReducer';
+import { initializeBlogs, createBlog } from './reducers/blogReducer';
 import { initializeUser, logout } from './reducers/authReducer';
 import { initializeUsers } from './reducers/userReducer';
 
@@ -42,6 +43,9 @@ const App = () => {
   const userMatch = useMatch('/users/:id');
   const user = userMatch ? userById(userMatch.params.id) : null;
 
+  const blogMatch = useMatch('/blogs/:id');
+  const blog = blogMatch ? blogById(blogMatch.params.id) : null;
+
   // ########################
   // Actions
   // ########################
@@ -53,22 +57,6 @@ const App = () => {
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     dispatch(createBlog(blogObject));
-  };
-
-  const handleLike = (id) => {
-    const blog = blogById(id);
-    dispatch(likeBlog(blog));
-  };
-
-  const removeBlog = (id) => {
-    const blog = blogById(id);
-
-    const result = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
-    if (!result) {
-      return;
-    }
-
-    dispatch(deleteBlog(blog));
   };
 
   if (authUser === null) {
@@ -91,15 +79,8 @@ const App = () => {
       </div>
       <Routes>
         <Route path="/users/:id" element={<User user={user} />} />
-        <Route
-          path="/users"
-          element={
-            <div>
-              <h2>Users</h2>
-              <UserList />
-            </div>
-          }
-        />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/blogs/:id" element={<BlogDetails blog={blog} />} />
         <Route
           path="/"
           element={
@@ -109,13 +90,7 @@ const App = () => {
               </Togglable>
 
               {blogs.map((blog) => (
-                <Blog
-                  key={blog.id}
-                  user={authUser}
-                  blog={blog}
-                  addLike={() => handleLike(blog.id)}
-                  removeBlog={() => removeBlog(blog.id)}
-                />
+                <Blog key={blog.id} blog={blog} />
               ))}
             </div>
           }
