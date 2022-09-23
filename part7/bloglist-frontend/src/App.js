@@ -12,8 +12,9 @@ import User from './components/User';
 import BlogDetails from './components/BlogDetails';
 
 import { initializeBlogs, createBlog } from './reducers/blogReducer';
-import { initializeUser, logout } from './reducers/authReducer';
+import { initializeUser } from './reducers/authReducer';
 import { initializeUsers } from './reducers/userReducer';
+import NavMenu from './components/NavMenu';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -50,10 +51,6 @@ const App = () => {
   // Actions
   // ########################
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     dispatch(createBlog(blogObject));
@@ -71,12 +68,9 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <NavMenu />
+      <h2>blog app</h2>
       <Notification />
-      <div>
-        <p>{authUser.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-      </div>
       <Routes>
         <Route path="/users/:id" element={<User user={user} />} />
         <Route path="/users" element={<UserList />} />
