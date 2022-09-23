@@ -15,7 +15,7 @@ const notificationSlice = createSlice({
   },
 });
 
-export const setNotification = (type, text, seconds) => {
+export const setNotification = (type, text, seconds = 5) => {
   return (dispatch) => {
     const { setNotifyMessage, deleteNotifyMessage } = notificationSlice.actions;
 

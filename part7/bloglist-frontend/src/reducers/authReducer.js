@@ -45,7 +45,7 @@ export const login = (username, password) => {
 
       dispatch(setUser(user));
     } catch (error) {
-      dispatch(setNotification('error', error.response.data.error));
+      dispatch(setNotification('error', error.response.data.error, 5));
     }
   };
 };
