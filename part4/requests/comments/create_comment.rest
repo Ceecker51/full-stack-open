@@ -6,7 +6,7 @@
 
 ###
 
-# @name getAllBlogs
+# get all blogs 
 GET {{baseUrl}}/blogs
 
 ###

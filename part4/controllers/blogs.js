@@ -118,17 +118,26 @@ blogRouter.post('/:id/comments', async (request, response) => {
     return response.status(400).end();
   }
 
-  const blog = await Blog.findById(request.params.id);
-
-  const comment = new Comment({
-    text: body.text,
-  });
+  const comment = new Comment({ text: body.text });
   const savedComment = await comment.save();
 
+  const blog = await Blog.findById(request.params.id);
   blog.comments = blog.comments.concat(savedComment._id);
-  await blog.save();
 
-  response.status(201).json(savedComment);
+  const updatedBlog = await Blog.findByIdAndUpdate(blog.id, blog, {
+    new: true,
+  }).populate([
+    {
+      path: 'user',
+      select: { username: 1, name: 1 },
+    },
+    {
+      path: 'comments',
+      select: { text: 1 },
+    },
+  ]);
+
+  response.status(201).json(updatedBlog);
 });
 
 module.exports = blogRouter;

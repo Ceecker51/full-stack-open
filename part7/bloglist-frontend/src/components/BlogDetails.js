@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { likeBlog, deleteBlog } from '../reducers/blogReducer';
+import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer';
 
 const BlogDetails = ({ blog }) => {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.authUser);
+  const [text, setText] = useState('');
 
   const handleLike = () => {
     dispatch(likeBlog(blog));
@@ -17,6 +19,14 @@ const BlogDetails = ({ blog }) => {
     }
 
     dispatch(deleteBlog(blog));
+  };
+
+  const addComment = (event) => {
+    event.preventDefault();
+
+    dispatch(commentBlog(blog, { text }));
+
+    setText('');
   };
 
   if (!blog) {
@@ -44,6 +54,10 @@ const BlogDetails = ({ blog }) => {
       <div>added by {blog.user.name}</div>
       {showRemoveButton()}
       <h2>comments</h2>
+      <form onSubmit={addComment}>
+        <input type="text" value={text} onChange={({ target }) => setText(target.value)} />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map((comment) => (
           <li key={comment.id}>{comment.text}</li>

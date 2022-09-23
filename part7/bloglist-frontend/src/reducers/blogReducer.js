@@ -76,7 +76,17 @@ export const likeBlog = (blog) => {
       dispatch(updateBlog(updatedBlog));
       dispatch(setNotification('success', `updated blog ${updatedBlog.title}`, 5));
     } catch (error) {
-      console.log(error);
+      dispatch(setNotification('error', error.response.data.error, 5));
+    }
+  };
+};
+
+export const commentBlog = (blog, comment) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.createComment(blog.id, comment);
+      dispatch(updateBlog(updatedBlog));
+    } catch (error) {
       dispatch(setNotification('error', error.response.data.error, 5));
     }
   };
