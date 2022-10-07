@@ -142,31 +142,43 @@ const resolvers = {
   Query: {
     bookCount: async () => Book.collection.countDocuments(),
     allBooks: async (root, args) => {
-      // let result = books;
+      const filterArgs = {};
 
-      // if (args.author) {
-      //   result = result.filter((b) => b.author === args.author);
-      // }
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author });
+        if (!author) {
+          throw new UserInputError(error.message, { invalidArgs: args });
+        }
 
-      // if (args.genre) {
-      //   result = result.filter((b) => b.genres.includes(args.genre));
-      // }
+        filterArgs.author = author._id;
+      }
 
-      return Book.find({});
+      if (args.genre) {
+        filterArgs.genres = { $in: [args.genre] };
+      }
+
+      return Book.find(filterArgs);
     },
     authorCount: () => Author.collection.countDocuments(),
     allAuthors: async (root, args) => {
       return Author.find({});
     },
   },
+  Book: {
+    author: async (root) => {
+      const author =  Author.findById(root.author);
+      return author;
+    },
+  },
   Author: {
-    bookCount: (root) => {
-      return books.filter((b) => b.author === root.name).length;
+    bookCount: async (root) => {
+      const books = await Book.find({author: root._id});
+      return books.length;
     },
   },
   Mutation: {
     addBook: async (root, args) => {
-      const author = await Author.findOne({_id: args.author});
+      const author = await Author.findOne({ _id: args.author });
 
       if (!author) {
         const author = new Author({ name: args.author });
@@ -188,16 +200,22 @@ const resolvers = {
 
       return book;
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((a) => a.name === args.name);
+    editAuthor: async (root, args) => {
+      try {
+        const updatedAuthor = await Author.findOneAndUpdate(
+          { name: args.name },
+          { born: args.setBornTo },
+          {
+            new: true,
+            runValidators: true,
+            context: "query",
+          }
+        );
 
-      if (!author) {
-        return null;
+        return updatedAuthor;
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args });
       }
-
-      const updatedAuthor = { ...author, born: args.setBornTo };
-      authors = authors.map((a) => (a.name === args.name ? updatedAuthor : a));
-      return updatedAuthor;
     },
   },
 };
