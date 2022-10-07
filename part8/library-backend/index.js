@@ -178,7 +178,7 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      const author = await Author.findOne({ _id: args.author });
+      const author = await Author.findOne({ name: args.author });
 
       if (!author) {
         const author = new Author({ name: args.author });
@@ -186,6 +186,11 @@ const resolvers = {
         try {
           await author.save();
         } catch (error) {
+         
+          if (error.name === 'ValidationError') {
+            throw new UserInputError('field "author" is not valid', { invalidArgs: args });
+          }
+
           throw new UserInputError(error.message, { invalidArgs: args });
         }
       }
@@ -195,6 +200,10 @@ const resolvers = {
       try {
         await book.save();
       } catch (error) {
+        if (error.name === 'ValidationError') {
+          throw new UserInputError('field "title" is not valid', { invalidArgs: args });
+        }
+
         throw new UserInputError(error.message, { invalidArgs: args });
       }
 
