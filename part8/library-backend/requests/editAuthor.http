@@ -1,0 +1,93 @@
+POST http://localhost:4000 HTTP/1.1
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+query {
+  allAuthors {
+    name
+    born
+    bookCount
+  }
+}
+
+###
+
+# @name login
+
+POST http://localhost:4000 HTTP/1.1
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    value
+  }
+}
+
+{
+  "username": "muluukkai",
+  "password": "secret"
+}
+
+###
+
+@authToken = {{login.response.body.data.login.value}}
+
+POST http://localhost:4000 HTTP/1.1
+Content-Type: application/json
+Authorization: bearer {{authToken}}
+X-Request-Type: GraphQL
+
+mutation editAuthor($name: String!, $born: Int!) {
+  editAuthor(name: $name, setBornTo: $born) {
+    name
+    born
+    bookCount
+  }
+}
+
+{
+  "name": "Robert Martin",
+  "born": 1952
+}
+
+###
+
+POST http://localhost:4000 HTTP/1.1
+Content-Type: application/json
+Authorization: bearer {{authToken}}
+X-Request-Type: GraphQL
+
+mutation editAuthor($name: String!, $born: Int!) {
+  editAuthor(name: $name, setBornTo: $born) {
+    name
+    born
+    bookCount
+  }
+}
+
+{
+  "name": "Martin Fowler",
+  "born": 1963
+}
+
+###
+
+POST http://localhost:4000 HTTP/1.1
+Content-Type: application/json
+Authorization: bearer {{authToken}}
+X-Request-Type: GraphQL
+
+mutation editAuthor($name: String!, $born: Int!) {
+  editAuthor(name: $name, setBornTo: $born) {
+    name
+    born
+    bookCount
+  }
+}
+
+{
+  "name": "Fyodor Dostoevsky",
+  "born": 1821
+}
+
