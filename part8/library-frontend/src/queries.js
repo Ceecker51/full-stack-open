@@ -19,6 +19,7 @@ export const ALL_BOOKS = gql`
         born
       }
       published
+      genres
     }
   }
 `;
@@ -42,6 +43,7 @@ export const CREATE_BOOK = gql`
         born
       }
       published
+      genres
     }
   }
 `;
