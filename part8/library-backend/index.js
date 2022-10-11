@@ -73,7 +73,7 @@ const typeDefs = gql`
 
     editAuthor(name: String!, setBornTo: Int!): Author
 
-    createUser(username: String!, password: String!): User
+    createUser(username: String!, favouriteGenre: String!): User
     login(username: String!, password: String!): Token
   }
 `;
@@ -188,7 +188,7 @@ const resolvers = {
     },
 
     createUser: async (root, args) => {
-      const user = new User({ username: args.username });
+      const user = new User({ username: args.username, favouriteGenre: args.favouriteGenre });
       return user.save().catch((error) => {
         throw new UserInputError(error.message, { invalidArgs: args });
       });
