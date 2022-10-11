@@ -6,7 +6,7 @@ import { ALL_BOOKS } from "../queries";
 const Books = (props) => {
   const [filterGenre, setFilterGenre] = useState("");
 
-  const result = useQuery(ALL_BOOKS);
+  const result = useQuery(ALL_BOOKS, { variables: { genre: filterGenre }});
 
   if (!props.show) {
     return null;
@@ -16,17 +16,8 @@ const Books = (props) => {
     return <div>loading...</div>;
   }
 
-  const union = (a, b) => {
-    const result = a.concat(b);
-    const resultSet = new Set(result);
-    return [...resultSet];
-  };
-
-  const genres = result.data.allBooks.map((book) => book.genres).reduce(union);
-
-  const filteredBooks = filterGenre
-    ? result.data.allBooks.filter((book) => book.genres.includes(filterGenre))
-    : result.data.allBooks;
+  const genres = ["refactoring", "agile", "patterns", "design", "classic", "revolution", "crime"];
+  const filteredBooks = result.data.allBooks;
 
   return (
     <div>
@@ -61,6 +52,7 @@ const Books = (props) => {
             {genre}
           </button>
         ))}
+
         <button onClick={() => setFilterGenre("")}>all genres</button>
       </div>
     </div>
