@@ -90,7 +90,7 @@ const resolvers = {
           throw new UserInputError(error.message, { invalidArgs: args });
         }
 
-        filterArgs.author = author._id;
+        filterArgs.author = author.id;
       }
 
       if (args.genre) {
@@ -119,7 +119,7 @@ const resolvers = {
 
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({ author: root._id });
+      const books = await Book.find({ author: root.id });
       return books.length;
     },
   },
@@ -148,7 +148,7 @@ const resolvers = {
         }
       }
 
-      const book = new Book({ ...args, author: author._id });
+      const book = new Book({ ...args, author: author.id });
 
       try {
         await book.save();
@@ -202,7 +202,7 @@ const resolvers = {
       }
 
       const userForToken = {
-        id: user._id,
+        id: user.id,
         username: user.username,
       };
 

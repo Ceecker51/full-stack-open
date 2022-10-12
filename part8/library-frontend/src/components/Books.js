@@ -1,12 +1,46 @@
-import { useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
+import { useQuery, useApolloClient } from "@apollo/client";
 
 import { ALL_BOOKS } from "../queries";
 
-const Books = (props) => {
-  const [filterGenre, setFilterGenre] = useState("");
+const union = (a, b) => {
+  const result = a.concat(b);
+  const resultSet = new Set(result);
+  return [...resultSet];
+};
 
-  const result = useQuery(ALL_BOOKS, { variables: { genre: filterGenre }});
+const Books = (props) => {
+  const [books, setBooks] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [filterGenre, setFilterGenre] = useState("");
+  const [bookCount, setBookCount] = useState(-1);
+
+  const client = useApolloClient();
+  const result = useQuery(ALL_BOOKS, { variables: { genre: filterGenre } });
+
+  const updateGenres = () => {
+    const allGenres = result.data.allBooks
+      .map((book) => book.genres)
+      .reduce(union);
+
+    setGenres(allGenres);
+    setBookCount(result.data.allBooks.length);
+  };
+
+  useEffect(() => {
+    if (result.data) {
+      setBooks(result.data.allBooks);
+
+      if (genres.length === 0) {
+        updateGenres();
+      }
+    }
+  }, [result, filterGenre]);
+
+  const updateFilter = async (genre) => {
+    await result.refetch({ genre });
+    setFilterGenre(genre);
+  };
 
   if (!props.show) {
     return null;
@@ -15,9 +49,6 @@ const Books = (props) => {
   if (result.loading) {
     return <div>loading...</div>;
   }
-
-  const genres = ["refactoring", "agile", "patterns", "design", "classic", "revolution", "crime"];
-  const filteredBooks = result.data.allBooks;
 
   return (
     <div>
@@ -29,6 +60,15 @@ const Books = (props) => {
         </div>
       ) : null}
 
+      <div>
+        {genres.map((genre) => (
+          <button key={genre} onClick={() => updateFilter(genre)}>
+            {genre}
+          </button>
+        ))}
+        <button onClick={() => updateFilter("")}>all genres</button>
+      </div>
+
       <table>
         <tbody>
           <tr>
@@ -36,7 +76,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -45,16 +85,6 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
-
-      <div>
-        {genres.map((genre) => (
-          <button key={genre} onClick={() => setFilterGenre(genre)}>
-            {genre}
-          </button>
-        ))}
-
-        <button onClick={() => setFilterGenre("")}>all genres</button>
-      </div>
     </div>
   );
 };
