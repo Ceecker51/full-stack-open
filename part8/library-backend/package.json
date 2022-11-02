@@ -14,11 +14,18 @@
     "nodemon": "^2.0.20"
   },
   "dependencies": {
+    "@graphql-tools/schema": "^9.0.7",
     "apollo-server": "^3.10.2",
+    "apollo-server-core": "^3.10.4",
+    "apollo-server-express": "^3.10.4",
     "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.11.2",
     "graphsql": "^0.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.5",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.10.0"
   }
 }
