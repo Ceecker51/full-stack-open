@@ -8,7 +8,26 @@ import NewBook from "./components/NewBook";
 import SetBirthyear from "./components/SetBirthyear";
 import Recommend from "./components/Recommend";
 
-import { BOOK_ADDED } from "./queries";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByName = (a) => {
+    let seen = new Set();
+
+    return a.filter((item) => {
+      if (item) {
+        let k = item.title;
+        return seen.has(k) ? false : seen.add(k);
+      }
+    });
+  };
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook)),
+    };
+  });
+};
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -18,8 +37,8 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      window.alert("A new book was added.");
-      console.log(subscriptionData);
+      const addedBook = subscriptionData.bookAdded;
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
     },
   });
 
