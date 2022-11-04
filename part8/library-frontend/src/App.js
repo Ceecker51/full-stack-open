@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
 
 import Authors from "./components/Authors";
 import Books from "./components/Books";
@@ -8,11 +8,20 @@ import NewBook from "./components/NewBook";
 import SetBirthyear from "./components/SetBirthyear";
 import Recommend from "./components/Recommend";
 
+import { BOOK_ADDED } from "./queries";
+
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
 
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert("A new book was added.");
+      console.log(subscriptionData);
+    },
+  });
 
   const logout = () => {
     client.resetStore();
