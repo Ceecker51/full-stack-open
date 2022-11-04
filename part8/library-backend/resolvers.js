@@ -67,7 +67,11 @@ const resolvers = {
       const author = await Author.findOne({ name: args.author });
 
       if (!author) {
-        const author = new Author({ name: args.author });
+        const author = new Author({
+          name: args.author,
+          born: null,
+          bookCount: 1,
+        });
 
         try {
           await author.save();
@@ -80,6 +84,9 @@ const resolvers = {
 
           throw new UserInputError(error.message, { invalidArgs: args });
         }
+      } else {
+        author.bookCount = author.bookCount + 1;
+        await author.save();
       }
 
       const book = new Book({ ...args, author: author.id });
