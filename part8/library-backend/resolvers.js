@@ -1,5 +1,8 @@
 const { UserInputError, AuthenticationError } = require("apollo-server");
 const { PubSub } = require("graphql-subscriptions");
+const jwt = require("jsonwebtoken");
+
+const config = require("./utils/config");
 
 const Author = require("./models/author");
 const Book = require("./models/book");
