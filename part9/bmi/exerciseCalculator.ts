@@ -14,6 +14,36 @@ const ratings = [
   "good enough"
 ]
 
+interface ExerciseValues {
+  hoursOfExercises: Array<number>,
+  target: number
+}
+
+const parseExercises = (args: Array<string>): ExerciseValues => {
+  if (args.length < 3) throw new Error("Not enough arguments");
+
+  let target = 0;
+  const resultList: Array<number> = [];
+  for (let index = 2; index < args.length; index++) {
+    const element = args[index];
+
+    if (isNaN(Number(element))) {
+      throw new Error('Provided values were not numbers!')
+    }
+
+    if (index === 2) {
+      target = Number(element)
+    } else {
+      resultList.push(Number(element));
+    }
+  }
+
+  return {
+    hoursOfExercises: resultList,
+    target
+  }
+}
+
 const calculateExercises = (exerciseHours: Array<number>, target: number): Result => {
   let periodLength = exerciseHours.length;
   let trainingDays = exerciseHours.reduce((sum, current) => sum + (current > 0 ? 1 : 0), 0)
@@ -34,8 +64,14 @@ const calculateExercises = (exerciseHours: Array<number>, target: number): Resul
   }
 }
 
-const hoursOfExercises = [3, 0, 2, 4.5, 0, 3, 1]
-const targetAmount = 2
-
-const result = calculateExercises(hoursOfExercises, targetAmount)
-console.log(result)
+try {
+  const { hoursOfExercises, target } = parseExercises(process.argv);
+  const result = calculateExercises(hoursOfExercises, target)
+  console.log(result)
+} catch (error: unknown) {
+  let errorMessage = 'An error occured.'
+  if (error instanceof Error) {
+    errorMessage += ` Error: ` + error.message;
+  }
+  console.log(errorMessage)
+}
