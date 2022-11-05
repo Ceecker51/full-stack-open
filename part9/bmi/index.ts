@@ -1,8 +1,12 @@
 import express from "express";
+
 import { parseArguments, calculateBmi } from './bmiCalculator';
+import { parseExercises, calculateExercises } from './exerciseCalculator';
 
 const PORT = 3003;
 const app = express();
+
+app.use(express.json());
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
@@ -29,6 +33,28 @@ app.get("/bmi", (req, res) => {
       errorMessage += error.message;
     }
 
+    return res.status(400).send({ error: errorMessage });
+  }
+});
+
+app.post('/exercises', (req, res) => {
+  const daily_exercises = req.body.daily_exercises;
+  const target = req.body.target;
+
+  if (!daily_exercises || !target) {
+    return res.status(400).send({ error: 'missing parameters' });
+  }
+
+  try {
+    const params = parseExercises(daily_exercises, target);
+    const result = calculateExercises(params.daily_exercises, params.target);
+    return res.status(200).send(result);
+  } catch (error: unknown) {
+    let errorMessage = '';
+
+    if (error instanceof Error) {
+      errorMessage += error.message;
+    }
     return res.status(400).send({ error: errorMessage });
   }
 });

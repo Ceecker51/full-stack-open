@@ -15,36 +15,27 @@ const ratings = [
 ];
 
 interface ExerciseValues {
-  hoursOfExercises: Array<number>,
+  daily_exercises: Array<number>,
   target: number
 }
 
-const parseExercises = (args: Array<string>): ExerciseValues => {
-  if (args.length < 3) throw new Error("Not enough arguments");
+export const parseExercises = (exerciesRaw: any[], targetRaw: any): ExerciseValues => {
+  if (!targetRaw || exerciesRaw.length === 0) throw new Error("Not enough arguments");
 
-  let target = 0;
-  const resultList: Array<number> = [];
-  for (let index = 2; index < args.length; index++) {
-    const element = args[index];
-
-    if (isNaN(Number(element))) {
-      throw new Error('Provided values were not numbers!');
-    }
-
-    if (index === 2) {
-      target = Number(element);
-    } else {
-      resultList.push(Number(element));
-    }
+  if (isNaN(Number(targetRaw)) || exerciesRaw.some(n => isNaN(Number(n)))) {
+    throw new Error("malformatted parameters");
   }
 
+  const daily_exercises = exerciesRaw.map(n => Number(n));
+  const target = Number(targetRaw);
+
   return {
-    hoursOfExercises: resultList,
+    daily_exercises,
     target
   };
 };
 
-const calculateExercises = (exerciseHours: Array<number>, target: number): Result => {
+export const calculateExercises = (exerciseHours: Array<number>, target: number): Result => {
   const periodLength = exerciseHours.length;
   const trainingDays = exerciseHours.reduce((sum, current) => sum + (current > 0 ? 1 : 0), 0);
   const totalHours = exerciseHours.reduce((sum, current) => sum + current, 0);
@@ -64,14 +55,14 @@ const calculateExercises = (exerciseHours: Array<number>, target: number): Resul
   };
 };
 
-try {
-  const { hoursOfExercises, target } = parseExercises(process.argv);
-  const result = calculateExercises(hoursOfExercises, target);
-  console.log(result);
-} catch (error: unknown) {
-  let errorMessage = 'An error occured.';
-  if (error instanceof Error) {
-    errorMessage += ` Error: ` + error.message;
-  }
-  console.log(errorMessage);
-}
+// try {
+//   const { dailyExercises, target } = parseExercises(process.argv);
+//   const result = calculateExercises(dailyExercises, target);
+//   console.log(result);
+// } catch (error: unknown) {
+//   let errorMessage = 'An error occured.';
+//   if (error instanceof Error) {
+//     errorMessage += ` Error: ` + error.message;
+//   }
+//   console.log(errorMessage);
+// }
