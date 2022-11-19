@@ -117,3 +117,7 @@ dist
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Custom settings
+part9/patientor-frontend
+build/
