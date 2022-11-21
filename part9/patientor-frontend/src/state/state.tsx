@@ -33,10 +33,3 @@ export const StateProvider = ({ reducer, children }: StateProviderProps) => {
 };
 
 export const useStateValue = () => useContext(StateContext);
-
-export const updatePatient = (patientData: Patient): Action => {
-  return {
-    type: 'UPDATE_PATIENT',
-    payload: patientData,
-  };
-};

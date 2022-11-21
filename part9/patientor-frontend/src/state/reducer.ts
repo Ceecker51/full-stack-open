@@ -45,3 +45,28 @@ export const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
+
+// ###########################
+// Action Creator Functions
+// ###########################
+
+export const setPatientList = (patientList: Patient[]): Action => {
+  return {
+    type: 'SET_PATIENT_LIST',
+    payload: patientList,
+  };
+};
+
+export const addPatient = (patientData: Patient): Action => {
+  return {
+    type: 'ADD_PATIENT',
+    payload: patientData,
+  };
+};
+
+export const updatePatient = (patientData: Patient): Action => {
+  return {
+    type: 'UPDATE_PATIENT',
+    payload: patientData,
+  };
+};
