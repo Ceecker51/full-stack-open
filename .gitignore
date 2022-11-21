@@ -119,5 +119,4 @@ dist
 *.vsix
 
 # Custom settings
-part9/patientor-frontend
 build/
