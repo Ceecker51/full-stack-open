@@ -1,51 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-
 import { useParams } from 'react-router-dom';
 
 import { apiBaseUrl } from '../constants';
-import { Entry, Patient } from '../types';
-import { updatePatient, useStateValue } from '../state';
+import { Diagnosis, Patient } from '../types';
+import { setDiagnosisList, updatePatient, useStateValue } from '../state';
 
-interface Props {
-  entry: Entry;
-}
-
-const PatientEntry = ({ entry }: Props) => {
-  const [{ diagnosis }] = useStateValue();
-
-  return (
-    <div>
-      <div>
-        {entry.date} {entry.description}
-      </div>
-      <ul>
-        {entry.diagnosisCodes?.map((code) => (
-          <li key={code}>{code} {diagnosis[code].name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-const PatientEntries = () => {
-  const [{ patient }] = useStateValue();
-
-  if (!patient) {
-    return null;
-  }
-
-  return (
-    <div>
-      <h2>entries</h2>
-      <div>
-        {patient.entries.map((entry) => (
-          <PatientEntry key={entry.id} entry={entry} />
-        ))}
-      </div>
-    </div>
-  );
-};
+import PatientEntries from '../components/PatientEntries';
 
 const PatientDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -53,19 +14,28 @@ const PatientDetails = () => {
 
   React.useEffect(() => {
     const fetchPatient = async () => {
-      if (!id) {
-        return;
-      }
-
       try {
         const { data: patientFromApi } = await axios.get<Patient>(
-          `${apiBaseUrl}/patients/${id}`
+          `${apiBaseUrl}/patients/${id !== undefined ? id : ''}`
         );
         dispatch(updatePatient(patientFromApi));
       } catch (e) {
         console.error(e);
       }
     };
+
+    const fetchDiagnosisList = async () => {
+      try {
+        const { data: diagnosisListFromApi } = await axios.get<Diagnosis[]>(
+          `${apiBaseUrl}/diagnoses`
+        );
+        dispatch(setDiagnosisList(diagnosisListFromApi));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    void fetchDiagnosisList();
 
     if (patient && patient.id === id) {
       return;
