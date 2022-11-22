@@ -12,14 +12,16 @@ interface Props {
 }
 
 const PatientEntry = ({ entry }: Props) => {
+  const [{ diagnosis }] = useStateValue();
+
   return (
     <div>
       <div>
         {entry.date} {entry.description}
       </div>
       <ul>
-        {entry.diagnosisCodes?.map((diagnosisCode, index) => (
-          <li key={index}>{diagnosisCode}</li>
+        {entry.diagnosisCodes?.map((code) => (
+          <li key={code}>{code} {diagnosis[code].name}</li>
         ))}
       </ul>
     </div>
@@ -55,10 +57,6 @@ const PatientDetails = () => {
         return;
       }
 
-      if (patient?.id === id) {
-        return;
-      }
-
       try {
         const { data: patientFromApi } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${id}`
@@ -68,7 +66,12 @@ const PatientDetails = () => {
         console.error(e);
       }
     };
-    void fetchPatient();
+
+    if (patient && patient.id === id) {
+      return;
+    } else {
+      void fetchPatient();
+    }
   }, [dispatch]);
 
   const getGenderSign = (gender: string): string => {
