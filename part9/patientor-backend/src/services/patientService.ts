@@ -2,7 +2,13 @@ import { v1 as uuid } from 'uuid';
 
 import patients from '../../data/patients';
 
-import { NewPatient, Patient, PublicPatient } from '../types';
+import {
+  Entry,
+  EntryWithoutId,
+  NewPatient,
+  Patient,
+  PublicPatient,
+} from '../types';
 
 const getEntries = (): Patient[] => {
   return patients;
@@ -25,7 +31,6 @@ const addPatient = (entry: NewPatient): Patient => {
   };
 
   patients.push(newPatient);
-
   return newPatient;
 };
 
@@ -34,4 +39,20 @@ const findById = (id: string): Patient | undefined => {
   return patient;
 };
 
-export default { getEntries, getPublicEntries, addPatient, findById };
+const addEntry = (patientId: string, entry: EntryWithoutId): Entry => {
+  const patient = findById(patientId);
+
+  if (!patient) {
+    throw new Error('Incorrect patient id');
+  }
+
+  const newEntry = {
+    id: uuid(),
+    ...entry,
+  };
+
+  patient.entries.push(newEntry);
+  return newEntry;
+};
+
+export default { getEntries, getPublicEntries, addPatient, findById, addEntry };

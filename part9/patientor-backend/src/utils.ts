@@ -1,7 +1,18 @@
-import { Gender, NewPatient } from './types';
+import {
+  DateRange,
+  Diagnosis,
+  EntryWithoutId,
+  Gender,
+  HealthCheckRating,
+  NewPatient,
+} from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
+};
+
+const isNumber = (num: unknown): num is number => {
+  return typeof num === 'number' || num instanceof Number;
 };
 
 const isDate = (date: string): boolean => {
@@ -14,12 +25,12 @@ const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
 };
 
-const parseName = (name: unknown): string => {
-  if (!name || !isString(name)) {
-    throw new Error('Incorrect or missing name: ' + name);
+const parseString = (label: string, text: unknown): string => {
+  if (!text || !isString(text)) {
+    throw new Error(`Incorrect or missing ${label}:  ${text}`);
   }
 
-  return name;
+  return text;
 };
 
 const parseDate = (date: unknown): string => {
@@ -30,42 +41,127 @@ const parseDate = (date: unknown): string => {
   return date;
 };
 
-const parseSsn = (ssn: unknown): string => {
-  if (!ssn || !isString(ssn)) {
-    throw new Error('Incorrect or missing ssn: ' + ssn);
+const parseNumber = (label: string, num: unknown): number => {
+  if (!num || !isNumber(num)) {
+    throw new Error('Incorrect or missing ' + label);
   }
 
-  return ssn;
+  return num;
 };
 
 const parseGender = (gender: unknown): Gender => {
   if (!gender || !isGender(gender)) {
-    throw new Error('Incorrect or missing gender: ' + gender);
+    throw new Error(
+      'Incorrect or missing gender: ' +
+        gender +
+        '. Expected values are ' +
+        Object.values(Gender).join(' | ')
+    );
   }
 
   return gender;
 };
 
-const parseOccupation = (occupation: unknown): string => {
-  if (!occupation || !isString(occupation)) {
-    throw new Error('Incorrect or missing occupation: ' + occupation);
-  }
-
-  return occupation;
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const toNewPatient = (object: any): NewPatient => {
+export const toNewPatient = (object: any): NewPatient => {
   const newPatient: NewPatient = {
-    name: parseName(object.name),
+    name: parseString('name', object.name),
     dateOfBirth: parseDate(object.dateOfBirth),
-    ssn: parseSsn(object.ssn),
+    ssn: parseString('ssn', object.ssn),
     gender: parseGender(object.gender),
-    occupation: parseOccupation(object.occupation),
+    occupation: parseString('occupation', object.occupation),
     entries: [],
   };
 
   return newPatient;
 };
 
-export default toNewPatient;
+const isRating = (param: number): param is HealthCheckRating => {
+  return Object.values(HealthCheckRating).includes(param);
+};
+
+const parseRating = (rating: unknown): HealthCheckRating => {
+  const ratingNumber = parseNumber('rating', rating);
+
+  if (isNaN(ratingNumber) || !isRating(ratingNumber)) {
+    throw new Error(
+      'Incorrect or missing rating. Expected values: ' +
+        Object.values(HealthCheckRating).join(' | ')
+    );
+  }
+
+  return ratingNumber;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parseDiagnosticCodes = (
+  diagnosticCodes: any
+): Array<Diagnosis['code']> => {
+  if (!diagnosticCodes) {
+    return [];
+  }
+
+  const result = JSON.parse(JSON.stringify(diagnosticCodes)) as Array<
+    Diagnosis['code']
+  >;
+  return result;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parseSickLeave = (sickLeave: any): DateRange | undefined => {
+  if (!sickLeave) {
+    return undefined;
+  }
+
+  return {
+    startDate: parseDate(sickLeave.startDate),
+    endDate: parseDate(sickLeave.endDate),
+  };
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const toEntryWithoutId = (object: any): EntryWithoutId => {
+  const type = parseString('type', object.type);
+
+  switch (type) {
+    case 'HealthCheck':
+      return {
+        description: parseString('description', object.description),
+        date: parseDate(object.date),
+        specialist: parseString('specialist', object.specialist),
+        diagnosisCodes: parseDiagnosticCodes(object.diagnosisCodes),
+
+        type: type,
+        healthCheckRating: parseRating(object.healthCheckRating),
+      };
+
+    case 'Hospital':
+      return {
+        description: parseString('description', object.description),
+        date: parseDate(object.date),
+        specialist: parseString('specialist', object.specialist),
+        diagnosisCodes: parseDiagnosticCodes(object.diagnosisCodes),
+
+        type: type,
+        discharge: {
+          date: parseDate(object.discharge.date),
+          criteria: parseString('criteria', object.discharge.criteria),
+        },
+      };
+
+    case 'OccupationalHealthcare':
+      return {
+        description: parseString('description', object.description),
+        date: parseDate(object.date),
+        specialist: parseString('specialist', object.specialist),
+        diagnosisCodes: parseDiagnosticCodes(object.diagnosisCodes),
+
+        type: type,
+        employerName: parseString('employerName', object.employerName),
+        sickLeave: parseSickLeave(object.sickLeave),
+      };
+
+    default:
+      throw new Error('Unknown entry type');
+  }
+};
