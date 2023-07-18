@@ -1,6 +1,8 @@
 import { Entry } from '../types';
 import { useStateValue } from '../state';
 
+import EntryDetails from './EntryDetails';
+
 interface Props {
   entry: Entry;
 }
@@ -10,16 +12,14 @@ const PatientEntry = ({ entry }: Props) => {
 
   return (
     <div
-      // style={{
-      //   marginBottom: '10px',
-      //   border: '1px solid black',
-      //   borderRadius: '12px',
-      //   padding: '5px',
-      // }}
+      style={{
+        marginBottom: '10px',
+        border: '1px solid black',
+        borderRadius: '12px',
+        padding: '5px',
+      }}
     >
-      <div>
-        {entry.date} {entry.description}
-      </div>
+      <EntryDetails entry={entry} />
       {entry.diagnosisCodes && (
         <ul>
           {entry.diagnosisCodes.map((code) => (
