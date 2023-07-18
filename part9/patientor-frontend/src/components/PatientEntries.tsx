@@ -1,11 +1,12 @@
-import { Button } from '@material-ui/core';
-
 import { useStateValue } from '../state';
 
+import { Button } from '@material-ui/core';
 import PatientEntry from './PatientEntry';
 
 const PatientEntries = () => {
   const [{ patient }] = useStateValue();
+
+  // #################### Render #################### 
 
   if (!patient) {
     return null;

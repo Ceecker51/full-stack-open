@@ -1,24 +1,31 @@
 import React from 'react';
 import axios from 'axios';
 
-import { Box, Table, Button, TableHead, Typography } from '@material-ui/core';
+import { apiBaseUrl } from '../constants';
+import { addPatient, useStateValue } from '../state';
+import { Patient } from '../types';
+
+import { Box, Button, Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import { PatientFormValues } from '../AddPatientModal/AddPatientForm';
 import AddPatientModal from '../AddPatientModal';
-import { Patient } from '../types';
-import { apiBaseUrl } from '../constants';
+import { PatientFormValues } from '../AddPatientModal/AddPatientForm';
 import HealthRatingBar from '../components/HealthRatingBar';
-import { addPatient, useStateValue } from '../state';
-import { TableCell } from '@material-ui/core';
-import { TableRow } from '@material-ui/core';
-import { TableBody } from '@material-ui/core';
 
 const PatientListPage = () => {
+
+  // #########################
+  // Component State
+  // #########################
+
   const [{ patients }, dispatch] = useStateValue();
 
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string>();
+  const [error, setError] = React.useState<string | undefined>();
+
+  // #########################
+  // Component Actions
+  // #########################
 
   const openModal = (): void => setModalOpen(true);
 
@@ -47,6 +54,10 @@ const PatientListPage = () => {
       }
     }
   };
+
+  // #########################
+  // Component Rendering
+  // #########################
 
   return (
     <div className="App">

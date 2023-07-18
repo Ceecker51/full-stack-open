@@ -54,6 +54,8 @@ const PatientDetails = () => {
     }
   };
 
+  // #################### Render #################### 
+
   if (!patient) {
     return null;
   }
