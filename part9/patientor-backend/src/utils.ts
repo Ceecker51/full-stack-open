@@ -38,7 +38,7 @@ const parseString = (label: string, text: unknown): string => {
 };
 
 const parseNumber = (label: string, num: unknown): number => {
-  if (!num || !isNumber(num)) {
+  if (!isNumber(num)) {
     throw new Error('Incorrect or missing ' + label);
   }
 
@@ -67,7 +67,7 @@ const parseGender = (gender: unknown): Gender => {
 };
 
 const parseRating = (rating: unknown): HealthCheckRating => {
-  const ratingNumber = parseNumber('rating', rating);
+  const ratingNumber = parseNumber('healthCheckRating', rating);
 
   if (isNaN(ratingNumber) || !isRating(ratingNumber)) {
     throw new Error(

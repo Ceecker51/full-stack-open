@@ -67,6 +67,14 @@ export interface Patient {
   entries: Entry[];
 }
 
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
+// Define Entry without the 'id' property
+export type EntryWithoutId = UnionOmit<Entry, 'id'>;
+
 /**
  * Helper function for exhaustive type checking
  */

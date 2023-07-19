@@ -3,21 +3,25 @@ import { Diagnosis, Patient } from '../types';
 
 export type Action =
   | {
-      type: 'SET_PATIENT_LIST';
-      payload: Patient[];
-    }
+    type: 'SET_PATIENT_LIST';
+    payload: Patient[];
+  }
   | {
-      type: 'ADD_PATIENT';
-      payload: Patient;
-    }
+    type: 'ADD_PATIENT';
+    payload: Patient;
+  }
   | {
-      type: 'UPDATE_PATIENT';
-      payload: Patient;
-    }
+    type: "GET_PATIENT";
+    payload: Patient;
+  }
   | {
-      type: 'SET_DIAGNOSIS_LIST';
-      payload: Diagnosis[];
-    };
+    type: 'UPDATE_PATIENT';
+    payload: Patient;
+  }
+  | {
+    type: 'SET_DIAGNOSIS_LIST';
+    payload: Diagnosis[];
+  };
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -39,6 +43,11 @@ export const reducer = (state: State, action: Action): State => {
           ...state.patients,
           [action.payload.id]: action.payload,
         },
+      };
+    case "GET_PATIENT":
+      return {
+        ...state,
+        patient: action.payload
       };
     case 'UPDATE_PATIENT':
       return {
@@ -76,6 +85,13 @@ export const addPatient = (patientData: Patient): Action => {
   return {
     type: 'ADD_PATIENT',
     payload: patientData,
+  };
+};
+
+export const getPatient = (payload: Patient): Action => {
+  return {
+      type: "GET_PATIENT",
+      payload
   };
 };
 

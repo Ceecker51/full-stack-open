@@ -3,7 +3,6 @@ import { v1 as uuid } from 'uuid';
 import patients from '../../data/patients';
 
 import {
-  Entry,
   EntryWithoutId,
   NewPatient,
   Patient,
@@ -39,7 +38,7 @@ const findById = (id: string): Patient | undefined => {
   return patient;
 };
 
-const addEntry = (patientId: string, entry: EntryWithoutId): Entry => {
+const addEntry = (patientId: string, entry: EntryWithoutId): Patient => {
   const patient = findById(patientId);
 
   if (!patient) {
@@ -52,7 +51,7 @@ const addEntry = (patientId: string, entry: EntryWithoutId): Entry => {
   };
 
   patient.entries.push(newEntry);
-  return newEntry;
+  return patient;
 };
 
 export default { getEntries, getPublicEntries, addPatient, findById, addEntry };

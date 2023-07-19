@@ -42,7 +42,7 @@ const PatientDetails = () => {
     } else {
       void fetchPatient();
     }
-  }, [dispatch]);
+  }, [dispatch, id, patient]);
 
   const getGenderSign = (gender: string): string => {
     if (gender === 'male') {
@@ -53,8 +53,6 @@ const PatientDetails = () => {
       return '\u9906';
     }
   };
-
-  // #################### Render #################### 
 
   if (!patient) {
     return null;
