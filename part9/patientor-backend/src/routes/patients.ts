@@ -9,17 +9,6 @@ router.get('/', (_req, res) => {
   res.send(patientService.getPublicEntries());
 });
 
-router.get('/:id', (req, res) => {
-  const id = String(req.params.id);
-  const patient = patientService.findById(id);
-
-  if (patient) {
-    res.send(patient);
-  } else {
-    res.status(404);
-  }
-});
-
 router.post('/', (req, res) => {
   try {
     const newPatient = toNewPatient(req.body);
@@ -37,16 +26,25 @@ router.post('/', (req, res) => {
   }
 });
 
+router.get('/:id', (req, res) => {
+  const id = String(req.params.id);
+  const patient = patientService.findById(id);
+
+  if (patient) {
+    res.send(patient);
+  } else {
+    res.status(404);
+  }
+});
+
 router.post('/:id/entries', (req, res) => {
   try {
     const id = String(req.params.id);
     const newEntry = toEntryWithoutId(req.body);
     const addedEntry = patientService.addEntry(id, newEntry);
-
     res.json(addedEntry);
   } catch (error: unknown) {
     let errorMessage = 'Something went wrong.';
-
     if (error instanceof Error) {
       errorMessage += ' Error: ' + error.message;
     }

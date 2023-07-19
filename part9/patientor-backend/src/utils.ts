@@ -25,6 +25,10 @@ const isGender = (param: any): param is Gender => {
   return Object.values(Gender).includes(param);
 };
 
+const isRating = (param: number): param is HealthCheckRating => {
+  return Object.values(HealthCheckRating).includes(param);
+};
+
 const parseString = (label: string, text: unknown): string => {
   if (!text || !isString(text)) {
     throw new Error(`Incorrect or missing ${label}:  ${text}`);
@@ -33,20 +37,20 @@ const parseString = (label: string, text: unknown): string => {
   return text;
 };
 
-const parseDate = (date: unknown): string => {
-  if (!date || !isString(date) || !isDate(date)) {
-    throw new Error('Incorrect or missing date: ' + date);
-  }
-
-  return date;
-};
-
 const parseNumber = (label: string, num: unknown): number => {
   if (!num || !isNumber(num)) {
     throw new Error('Incorrect or missing ' + label);
   }
 
   return num;
+};
+
+const parseDate = (date: unknown): string => {
+  if (!date || !isString(date) || !isDate(date)) {
+    throw new Error('Incorrect or missing date: ' + date);
+  }
+
+  return date;
 };
 
 const parseGender = (gender: unknown): Gender => {
@@ -62,24 +66,6 @@ const parseGender = (gender: unknown): Gender => {
   return gender;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const toNewPatient = (object: any): NewPatient => {
-  const newPatient: NewPatient = {
-    name: parseString('name', object.name),
-    dateOfBirth: parseDate(object.dateOfBirth),
-    ssn: parseString('ssn', object.ssn),
-    gender: parseGender(object.gender),
-    occupation: parseString('occupation', object.occupation),
-    entries: [],
-  };
-
-  return newPatient;
-};
-
-const isRating = (param: number): param is HealthCheckRating => {
-  return Object.values(HealthCheckRating).includes(param);
-};
-
 const parseRating = (rating: unknown): HealthCheckRating => {
   const ratingNumber = parseNumber('rating', rating);
 
@@ -93,18 +79,12 @@ const parseRating = (rating: unknown): HealthCheckRating => {
   return ratingNumber;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const parseDiagnosticCodes = (
-  diagnosticCodes: any
-): Array<Diagnosis['code']> => {
-  if (!diagnosticCodes) {
-    return [];
+const parseDiagnosticCodes = (object: unknown): Array<Diagnosis['code']> => {
+  if (!object || typeof object !== 'object' || !('diagnosisCode' in object)) {
+    return [] as Array<Diagnosis['code']>;
   }
 
-  const result = JSON.parse(JSON.stringify(diagnosticCodes)) as Array<
-    Diagnosis['code']
-  >;
-  return result;
+  return object.diagnosisCode as Array<Diagnosis['code']>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -117,6 +97,20 @@ const parseSickLeave = (sickLeave: any): DateRange | undefined => {
     startDate: parseDate(sickLeave.startDate),
     endDate: parseDate(sickLeave.endDate),
   };
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const toNewPatient = (object: any): NewPatient => {
+  const newPatient: NewPatient = {
+    name: parseString('name', object.name),
+    dateOfBirth: parseDate(object.dateOfBirth),
+    ssn: parseString('ssn', object.ssn),
+    gender: parseGender(object.gender),
+    occupation: parseString('occupation', object.occupation),
+    entries: [],
+  };
+
+  return newPatient;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
