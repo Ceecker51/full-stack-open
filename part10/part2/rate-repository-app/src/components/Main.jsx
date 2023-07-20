@@ -3,25 +3,22 @@ import { StyleSheet, View } from "react-native";
 import AppBar from "./AppBar";
 import RepositoryList from "./RepositoryList";
 
+import theme from "../theme";
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     flexShrink: 1,
+    backgroundColor: theme.colors.mainBackground
   },
 });
 
 const Main = () => {
   return (
-    <>
+    <View style={styles.container}>
       <AppBar />
-      {/* <Text>Simple Text</Text>
-      <Text style={{paddingBottom: 10}}>Text with custom style</Text>
-      <Text fontWeight='bold' fontSize="subheading">
-        Bold subheading
-      </Text>
-      <Text color="textSecondary">Text with secondary color</Text> */}
       <RepositoryList />
-    </>
+    </View>
   );
 };
 

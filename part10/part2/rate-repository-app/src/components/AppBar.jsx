@@ -8,7 +8,8 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: "center",
   },
 });
 
@@ -16,7 +17,7 @@ const AppBar = () => {
   
   return (
     <View style={styles.container}>
-      <AppBarTab />
+      <AppBarTab text="Repositories" />
     </View>
   );
 };

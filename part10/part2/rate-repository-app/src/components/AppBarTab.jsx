@@ -1,18 +1,15 @@
 import { StyleSheet, Pressable } from "react-native";
 
 import Text from "./Text";
+
 import theme from "../theme";
 
 const styles = StyleSheet.create({
-  flexItem: {
+  item: {
     flexGrow: 1,
   },
-  text: {
-    backgroundColor: theme.appBar.backgroundColor,
-    color: theme.appBar.color,
-
-    fontSize: theme.appBar.fontSize,
-    fontWeight: theme.appBar.fontWeight,
+  tab: {
+    backgroundColor: theme.colors.barBackground,
 
     paddingTop: 20,
     paddingBottom: 20,
@@ -20,14 +17,21 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppBarTab = () => {
-  const onPress = () => {
+const AppBarTab = ({ text }) => {
+  const onPressed = () => {
     console.log("Pressed");
   };
 
   return (
-    <Pressable style={styles.flexItem} onPress={onPress}>
-      <Text style={styles.text}>Repositories</Text>
+    <Pressable style={styles.item} onPress={onPressed}>
+      <Text
+        fontWeight="bold"
+        color="white"
+        fontSize="subheading"
+        style={styles.tab}
+      >
+        {text}
+      </Text>
     </Pressable>
   );
 };
