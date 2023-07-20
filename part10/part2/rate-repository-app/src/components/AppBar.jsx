@@ -17,7 +17,8 @@ const AppBar = () => {
   
   return (
     <View style={styles.container}>
-      <AppBarTab text="Repositories" />
+      <AppBarTab text="Repositories" url="/" />
+      <AppBarTab text="Sign in" url="/signin" />
     </View>
   );
 };
