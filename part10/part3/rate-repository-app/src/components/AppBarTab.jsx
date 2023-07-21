@@ -11,20 +11,26 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 20,
-  }
+  },
 });
 
-const AppBarTab = ({ text, url }) => {
+const AppBarTab = ({ text, url, onPress }) => {
+  if (url) {
+    return (
+      <Link style={styles.item} to={url}>
+        <Text fontWeight="bold" color="white" fontSize="subheading">
+          {text}
+        </Text>
+      </Link>
+    );
+  }
+
   return (
-    <Link style={styles.item} to={url}>
-      <Text
-        fontWeight="bold"
-        color="white"
-        fontSize="subheading"
-      >
+    <Pressable style={styles.item} onPress={onPress}>
+      <Text fontWeight="bold" color="white" fontSize="subheading">
         {text}
       </Text>
-    </Link>
+    </Pressable>
   );
 };
 
