@@ -5,6 +5,8 @@ import * as yup from "yup";
 import FormikTextInput from "./FormikTextInput";
 import Button from "./Button";
 
+import useSignIn from "../hooks/useSignIn";
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
@@ -46,28 +48,35 @@ const SignInForm = ({ onSubmit }) => {
 };
 
 const SignIn = () => {
-  const validationSchema = yup
-    .object()
-    .shape({
-      username: yup
-        .string()
-        .required("Username is required"),
-      password: yup
-        .string()
-        .required("Password is required"),
-    });
+  const [signIn] = useSignIn();
+
+  const validationSchema = yup.object().shape({
+    username: yup.string().required("Username is required"),
+    password: yup.string().required("Password is required"),
+  });
 
   const initialValues = {
     username: "",
     password: "",
   };
 
-  const onSubmit = (values) => {
-    console.log(values);
+  const onSubmit = async (values) => {
+    const { username, password } = values;
+
+    try {
+      const { data } = await signIn({ username, password });
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    >
       {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
     </Formik>
   );
