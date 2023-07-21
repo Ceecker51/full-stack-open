@@ -1,0 +1,3 @@
+[submodule "part10/part3/rate-repository-api"]
+	path = part10/part3/rate-repository-api
+	url = https://github.com/fullstack-hy2020/rate-repository-api
