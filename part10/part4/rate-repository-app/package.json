@@ -1,0 +1,40 @@
+{
+  "name": "rate-repository-app",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "lint": "eslint ./src/**/*.{js,jsx} App.js --no-error-on-unmatched-pattern"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.7.17",
+    "@expo/metro-config": "^0.10.6",
+    "@expo/webpack-config": "^0.17.2",
+    "dotenv": "^16.3.1",
+    "expo": "~47.0.14",
+    "expo-status-bar": "~1.4.2",
+    "formik": "^2.4.2",
+    "graphql": "^15.8.0",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "react-native": "0.70.8",
+    "react-native-web": "~0.18.9",
+    "react-router-native": "^6.14.2",
+    "yup": "^1.2.0",
+    "@react-native-async-storage/async-storage": "~1.17.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/eslint-parser": "^7.22.9",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-native": "^4.0.0"
+  },
+  "private": true,
+  "overrides": {
+    "react-devtools-core": "~4.25.0"
+  }
+}
